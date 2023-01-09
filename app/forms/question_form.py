@@ -5,4 +5,4 @@ from wtforms.validators import DataRequired
 class QuestionForm(FlaskForm):
     category_id = IntegerField('Category ID')
     question_text = StringField('Question')
-    option1 = String
+    
