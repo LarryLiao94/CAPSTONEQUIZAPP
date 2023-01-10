@@ -13,6 +13,8 @@ class Progress(db.Model):
     correct_answers = db.Column(db.Integer, nullable=False)
     total_answers = db.Column(db.Integer, nullable=False)
 
+    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -20,4 +22,3 @@ class Progress(db.Model):
             'correct_answers': self.correct_answers,
             'total_answers': self.total_answers
         }
-

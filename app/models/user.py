@@ -15,6 +15,11 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
+    progress = db.relationship('Progress', primaryjoin="(User.id==Progress.user_id)", backref='users', lazy=True)
+    quizzes = db.relationship('Quiz', primaryjoin="(User.id==Quiz.user_id)", backref='users', lazy=True)
+    questions = db.relationship('Question', primaryjoin="(User.id==Question.user_id)", backref='users', lazy=True)
+    user_questions = db.relationship('User_Question', primaryjoin="(User.id==User_Question.user_id)", backref='users', lazy=True)
+
     @property
     def password(self):
         return self.hashed_password
