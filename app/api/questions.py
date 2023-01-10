@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, json
 from flask_login import current_user, login_required
-from app.models import Question, db, User
+from app.models import Question, db, User, Choice
 
 question_routes = Blueprint('questions', __name__)
 
@@ -8,17 +8,49 @@ question_routes = Blueprint('questions', __name__)
 @question_routes.route('/', methods=['POST'])
 @login_required
 def create_question():
-    form = QuestionForm(request.form, csrf_enabled=False)
-    if form.validate():
-        question = Question(
-            category_id = form.category_id.data,
-            question_text = form.question_text.data
+    # form = QuestionForm(request.form, csrf_enabled=False)
+    # if form.validate():
+    #     question = Question(
+    #         category_id = form.category_id.data,
+    #         question_text = form.question_text.data
+    #     )
+    #     db.session.add(question)
+    #     db.session.commit()
+    #     return jsonify({'question': question.to_dict()}), 201
+    # else:
+    #     return jsonify({'error': form.errors}), 400
+    question = json.loads(request.data)
+    print(question["choices"],'OISADJFOAIDJF')
+    new_question = Question(
+        user_id = current_user.get_id(),
+        category_id = int(question["category_id"]),
+        quiz_id = int(question["quiz_id"]),
+        question_text = question["question_text"]
+    )
+    db.session.add(new_question)
+    db.session.commit()
+    print(new_question.id, "NEW QUESTIONNNNNNN")
+    # print(new_question.id, ' POST NEW QUESTION')
+    # test_choice = Choice(
+    #     question_id = int(new_question.id),
+    #     choice = "testing choice   ",
+    #     is_correct = True
+    # )
+    # db.session.add(test_choice)
+    # db.session.commit()
+    # print(test_choice, "test choice")
+
+    for choice in question["choices"]:
+        new_choice = Choice(
+            question_id = int(new_question.id),
+            choice = choice["choice"],
+            is_correct = choice["is_correct"]
         )
-        db.session.add(question)
-        db.session.commit()
-        return jsonify({'question': question.to_dict()}), 201
-    else:
-        return jsonify({'error': form.errors}), 400
+        db.session.add(new_choice)
+    db.session.commit()
+    print("testing")
+    # new_question["choices"] = [Choice() for choice in new_question["choices"]]
+    return new_question.to_dict()
 
 @question_routes.route('/<int:id>', methods=['PUT'])
 @login_required

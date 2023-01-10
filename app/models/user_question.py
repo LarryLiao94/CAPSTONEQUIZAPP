@@ -9,7 +9,7 @@ class User_Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('questions.id')), nullable=False)
-    user_choice = db.Column(db.Integer, nullable=True)
+    user_choice = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('choices.id')),nullable=True)
 
     def to_dict(self):
         return {

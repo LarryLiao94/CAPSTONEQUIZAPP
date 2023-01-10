@@ -11,6 +11,9 @@ class Choice(db.Model):
     choice = db.Column(db.String(255), nullable=True)
     is_correct = db.Column(db.Boolean)
 
+    user_questions = db.relationship('User_Question', primaryjoin="(Choice.id==User_Question.user_choice)", backref='choices', lazy=True)
+
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -18,4 +21,3 @@ class Choice(db.Model):
             'choice': self.choice,
             'is_correct': self.is_correct
         }
-    

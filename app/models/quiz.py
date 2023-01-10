@@ -16,5 +16,6 @@ class Quiz(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'title' : self.title
+            'title' : self.title,
+            'questions': [question.to_dict() for question in self.questions]
         }

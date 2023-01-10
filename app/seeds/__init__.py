@@ -5,6 +5,7 @@ from .choices import seed_choices, undo_choices
 from .categories import seed_categories, undo_categories
 from .quizzes import seed_quizzes, undo_quizzes
 from .user_questions import seed_user_questions, undo_user_questions
+from .progress import seed_progress, undo_progress
 from app.models.db import db, environment, SCHEMA
 
 # Creates a seed group to hold our commands
@@ -27,6 +28,7 @@ def seed():
     seed_questions()
     seed_quizzes()
     seed_user_questions()
+    seed_progress()
     # Add other seed functions here
 
 
