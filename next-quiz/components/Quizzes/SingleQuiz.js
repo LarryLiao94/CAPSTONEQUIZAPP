@@ -2,19 +2,18 @@ import React, { useEffect, useState } from "react";
 
 // this will display list of all quizzes
 const SingleQuiz = ({id}) => {
-  const [questions, setQuestions] = useState([]);
+  const { data: quiz } = useSWR(`/api/quizzes/${id}/`);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetch(`http://localhost:5000/api/quizzes/${id}`);
-        const jsonData = await data.json();
-        setQuizzes(jsonData.quizzes);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  if (!quiz) return <p>Loading...</p>;
 
-    fetchData().catch(console.error);
-  }, [id]);
+  return (
+    <div>
+      <h1>{quiz.title}</h1>
+      <ul>
+        {quiz.questions.map(question => (
+          <li key={question.id}>{question.question_text}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }

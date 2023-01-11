@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, json
 from flask_login import current_user, login_required
 from app.models import Quiz, db, User, Question
 from app.forms.quiz_form import QuizForm
@@ -8,13 +8,24 @@ quiz_routes = Blueprint('quizzes', __name__)
 @quiz_routes.route('/', methods=['POST'])
 # @login_required
 def create_quiz():
-    form = QuizForm(request.form, csrf_enabled=False)
+    form = QuizForm( csrf_enabled=False)
     if form.validate():
         quiz = Quiz(
             user_id=current_user.id,
-            title=form.title.data
+            title=form.title.data,
+            questions=[]  # initialize an empty list of questions
         )
         db.session.add(quiz)
+        db.session.commit()
+
+        # Get the list of question ids from the request data
+        question_ids = json.loads(request.data)["question_ids"]
+        # Fetch the questions from the database using the ids
+        questions = Question.query.filter(Question.id.in_(question_ids)).all()
+        # Add the questions to the quiz
+        for question in questions:
+            quiz.questions.append(question)
+
         db.session.commit()
         return jsonify({'quiz': quiz.to_dict()}), 201
     else:
@@ -24,7 +35,7 @@ def create_quiz():
 @login_required
 def update_quiz(id):
     quiz = Quiz.query.get_or_404(id)
-    form = QuizForm(request.form, csrf_enabled=False)
+    form = QuizForm(csrf_enabled=False)
     if form.validate():
         quiz.title = form.title.data
         db.session.commit()
