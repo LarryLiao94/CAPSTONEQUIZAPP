@@ -5,7 +5,7 @@ from app.models import Quiz, db, User, Question
 quiz_routes = Blueprint('quizzes', __name__)
 
 @quiz_routes.route('/', methods=['POST'])
-@login_required
+# @login_required
 def create_quiz():
     form = QuizForm(request.form, csrf_enabled=False)
     if form.validate():
@@ -40,7 +40,7 @@ def delete_quiz(id):
     return jsonify({'message': 'Quiz deleted'}), 200
 
 @quiz_routes.route('/')
-@login_required
+# @login_required
 def get_all_quizzes():
     quizzes = Quiz.query.all()
     print(quizzes[0].questions, 'AOISDFJAOWIFJAO;WEIF')
