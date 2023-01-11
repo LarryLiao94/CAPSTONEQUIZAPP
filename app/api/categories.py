@@ -9,6 +9,7 @@ category_routes = Blueprint('categories', __name__)
 @login_required
 def get_all_categories():
     categories = Category.query.all()
+    print(categories[0].questions, 'HASOIDJFAOISDJF')
     return jsonify({
         'categories': [category.to_dict() for category in categories]
     })

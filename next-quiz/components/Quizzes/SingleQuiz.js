@@ -17,3 +17,4 @@ const SingleQuiz = ({id}) => {
 
     fetchData().catch(console.error);
   }, [id]);
+}
