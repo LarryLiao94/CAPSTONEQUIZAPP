@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
+
 import { Inter } from '@next/font/google'
 import DefaultLayout from '../components/layouts/default-layout'
 import QuizList from '../components/Quizzes/QuizList'

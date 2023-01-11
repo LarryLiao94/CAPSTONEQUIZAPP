@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
 const DefaultLayout = ({ children }) => {
   return (
@@ -15,6 +16,7 @@ const DefaultLayout = ({ children }) => {
         <Header />
         <div className="main">{children}</div>
       </div>
+      <Footer />
     </>
   );
 };

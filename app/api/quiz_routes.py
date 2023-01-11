@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 from app.models import Quiz, db, User, Question
+from app.forms.quiz_form import QuizForm
 
 quiz_routes = Blueprint('quizzes', __name__)
 
@@ -38,6 +39,12 @@ def delete_quiz(id):
     db.session.delete(quiz)
     db.session.commit()
     return jsonify({'message': 'Quiz deleted'}), 200
+
+@quiz_routes.route('/<int:id>')
+# @login_required
+def get_quiz_by_id(id):
+    quiz = Quiz.query.get_or_404(id)
+    return quiz.to_dict()
 
 @quiz_routes.route('/')
 # @login_required
