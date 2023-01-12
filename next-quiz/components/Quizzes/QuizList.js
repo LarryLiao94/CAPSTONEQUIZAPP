@@ -1,27 +1,43 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import useSWR from 'swr'
 
 // this will display list of all quizzes
 const QuizList = () => {
-  const [quizzes, setQuizzes] = useState([]);
+  // const [quizzes, setQuizzes] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // const login = await fetch("http://localhost:5000/api/auth/login", {
-        //     method:"POST",
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // const login = await fetch("http://localhost:5000/api/auth/login", {
+  //       //     method:"POST",
 
-        // });
-        const data = await fetch("http://localhost:5000/api/quizzes/");
-        const jsonData = await data.json();
-        setQuizzes(jsonData.quizzes);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  //       // });
+  //       const data = await fetch("http://localhost:5000/api/quizzes/");
+  //       const jsonData = await data.json();
+  //       setQuizzes(jsonData.quizzes);
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   };
 
-    fetchData().catch(console.error);
-  }, []);
+  //   fetchData().catch(console.error);
+  // }, []);
+  const { data: quizzes, error } = useSWR('/api/quizzes/', async (url) => {
+    try {
+        const res = await fetch(url);
+        const json = await res.json();
+        return json;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+});
+
+
+  if (!quizzes) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
 
   return (
     <div>

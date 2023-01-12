@@ -58,7 +58,7 @@ def get_quiz_by_id(id):
     return quiz.to_dict()
 
 @quiz_routes.route('/')
-# @login_required
+@login_required
 def get_all_quizzes():
     quizzes = Quiz.query.all()
     print(quizzes[0].questions, 'AOISDFJAOWIFJAO;WEIF')
