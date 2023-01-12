@@ -25,7 +25,7 @@ const QuizPage = () => {
   const [userAnswers,setUserAnswers] = useState({});
 
   const { data: quiz } = useSWR(
-    id ? `/api/quizzes/${id}/` : null,
+    id ? `http://localhost:5000/api/quizzes/${id}` : null,
     async (url) => {
       try {
         const res = await fetch(url);
@@ -41,6 +41,23 @@ const QuizPage = () => {
 
   if (!quiz) {
     return <div>Loading...</div>;
+  }
+  function handleChange(e, questionId) {
+    setUserAnswers({...userAnswers, [questionId]: e.target.value });
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    fetch('/api/quiz/' + id + '/answer', {
+        method: 'POST',
+        body: JSON.stringify({ userAnswers }),
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then(response => {
+        router.push('/result/' + id)
+    }).catch(error => {
+        console.log(error);
+    });
   }
 
   return (
@@ -90,23 +107,23 @@ export default QuizPage;
 //   //   fetch(`/api/quizzes/${id}`).then(res => res.json())
 //   // );
 
-//   // function handleChange(e, questionId) {
-//   //   setUserAnswers({...userAnswers, [questionId]: e.target.value });
-//   // }
+  // function handleChange(e, questionId) {
+  //   setUserAnswers({...userAnswers, [questionId]: e.target.value });
+  // }
 
-//   // function handleSubmit(e) {
-//   //   e.preventDefault();
-//   //   fetch('/api/quiz/' + id + '/answer', {
-//   //       method: 'POST',
-//   //       body: JSON.stringify({ userAnswers }),
-//   //       headers: { 'Content-Type': 'application/json' },
-//   //   })
-//   //   .then(response => {
-//   //       router.push('/result/' + id)
-//   //   }).catch(error => {
-//   //       console.log(error);
-//   //   });
-//   // }
+  // function handleSubmit(e) {
+  //   e.preventDefault();
+  //   fetch('/api/quiz/' + id + '/answer', {
+  //       method: 'POST',
+  //       body: JSON.stringify({ userAnswers }),
+  //       headers: { 'Content-Type': 'application/json' },
+  //   })
+  //   .then(response => {
+  //       router.push('/result/' + id)
+  //   }).catch(error => {
+  //       console.log(error);
+  //   });
+  // }
 //   return (
 //     <DefaultLayout>
 //       {/* <div className="container mx-auto px-4 py-8">
