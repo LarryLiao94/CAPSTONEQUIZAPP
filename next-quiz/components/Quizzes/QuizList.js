@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import useSWR from 'swr'
 
 // this will display list of all quizzes
 const QuizList = () => {
@@ -9,10 +8,10 @@ const QuizList = () => {
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
-  //       // const login = await fetch("http://localhost:5000/api/auth/login", {
-  //       //     method:"POST",
+  //       const login = await fetch("http://localhost:5000/api/auth/login", {
+  //           method:"POST",
 
-  //       // });
+  //       });
   //       const data = await fetch("http://localhost:5000/api/quizzes/");
   //       const jsonData = await data.json();
   //       setQuizzes(jsonData.quizzes);
@@ -23,16 +22,8 @@ const QuizList = () => {
 
   //   fetchData().catch(console.error);
   // }, []);
-  const { data: quizzes, error } = useSWR('/api/quizzes/', async (url) => {
-    try {
-        const res = await fetch(url);
-        const json = await res.json();
-        return json;
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-});
+  const { data: quizzes } = useSWR('/api/quizzes/');
+
 
 
   if (!quizzes) return <p>Loading...</p>;
@@ -41,7 +32,7 @@ const QuizList = () => {
 
   return (
     <div>
-      {quizzes.map((quiz) => {
+      {quizzes?.map((quiz) => {
         return (
           <div key={quiz.id}>
             <Link href={`/quiz/${quiz.id}`}>{quiz.title}</Link>
