@@ -4,19 +4,19 @@ from app.models import db, Choice, environment, SCHEMA
 # Adds a demo user, you can add other users here if you want
 def seed_choices():
     choice1 = Choice(question_id=1, choice='correct', is_correct=True)
-    choice2 = Choice(question_id=2, choice='correct', is_correct=True)
     choice3 = Choice(question_id=1, choice='testing', is_correct=False)
     choice4 = Choice(question_id=1, choice='testing', is_correct=False)
     choice5 = Choice(question_id=1, choice='testing', is_correct=False)
+    choice2 = Choice(question_id=2, choice='correct', is_correct=True)
     choice6 = Choice(question_id=2, choice='testing', is_correct=False)
     choice7 = Choice(question_id=2, choice='testing', is_correct=False)
     choice8 = Choice(question_id=2, choice='testing', is_correct=False)
 
     db.session.add(choice1)
-    db.session.add(choice2)
     db.session.add(choice3)
     db.session.add(choice4)
     db.session.add(choice5)
+    db.session.add(choice2)
     db.session.add(choice6)
     db.session.add(choice7)
     db.session.add(choice8)
