@@ -23,20 +23,7 @@ export default function ButtonAppBar() {
               <Button color="inherit">Sign Up</Button>
             </>
           ) : (
-            <Button color="secondary" variant="contained" onClick={() => {
-                fetch('http://localhost:5000/api/auth/logout', {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                      }
-                })
-                .then(res => {
-                    console.log(res)
-                    // handle success or error based on the response
-                })
-                .catch(error => console.error(error))
-            }}>
+            <Button color="secondary" variant="contained" onClick={() => alert('you are logging out')}>
               Logout
             </Button>
           )}

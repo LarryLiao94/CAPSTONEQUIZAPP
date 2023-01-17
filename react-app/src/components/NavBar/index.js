@@ -1,0 +1,84 @@
+import React, { useState, useEffect } from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
+import MenuItem from "@mui/material/MenuItem";
+import LogoutButton from "../auth/LogoutButton";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllCategoriesThunk, getCategoryByIdThunk } from "../../store/category";
+
+export default function ButtonAppBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  let history = useHistory();
+
+  const loggedSession = useSelector((state) => state.session.user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+        const allCategories = await dispatch(getAllCategoriesThunk());
+        setCategories(allCategories);
+        setLoading(false)
+    };
+    fetchCategories();
+  }, [dispatch]);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCategoryClick = (id) => {
+    handleClose();
+    history.push(`/categories/${id}`);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu">
+            <HomeIcon onClick={() => history.push("/dashboard")} />
+          </IconButton>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {loggedSession ? (
+            <>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Hello, {loggedSession.username}
+              </Typography>
+              <LogoutButton onClick={() => setIsLoggedIn(false)} />
+            </>
+          ) : (
+            <>
+              <Button color="inherit" onClick={() => history.push("/login")}>
+                Login
+              </Button>
+              <Button color="inherit" onClick={() => history.push("/sign-up")}>
+                Sign Up
+              </Button>
+            </>
+          )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}

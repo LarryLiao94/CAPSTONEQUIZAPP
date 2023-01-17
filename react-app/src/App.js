@@ -3,12 +3,14 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import LoginForm from './components/auth/LoginForm';
 import SignUpForm from './components/auth/SignUpForm';
-import NavBar from './components/NavBar';
+import NavBar from './components/NavBar/index';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UsersList from './components/UsersList';
 import User from './components/User';
 import { authenticate } from './store/session';
-import QuestionCreator from './components/QuestionCreator';
+import Quiz from './components/Quiz';
+import Dashboard from './components/Dashboard';
+import QuizBuilder from './components/QuizBuilder'
 
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -44,8 +46,14 @@ function App() {
         <Route path='/' exact={true} >
           <h1>My Home Page</h1>
         </Route>
-        <Route path='/questions/new' exact={true} >
-          <QuestionCreator />
+        <Route path='/quiz/:id'>
+          <Quiz />
+        </Route>
+        <Route path='/dashboard'>
+          <Dashboard />
+        </Route>
+        <Route path='/quiz/new'>
+          <QuizBuilder />
         </Route>
       </Switch>
     </BrowserRouter>

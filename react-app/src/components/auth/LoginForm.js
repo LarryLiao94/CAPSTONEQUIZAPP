@@ -10,6 +10,15 @@ const LoginForm = () => {
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
 
+  const handleGuestLogin = (e) => {
+    e.preventDefault();
+
+    return (
+      setEmail('demo@aa.io'),
+      setPassword('password')
+    )
+  }
+
   const onLogin = async (e) => {
     e.preventDefault();
     const data = await dispatch(login(email, password));
