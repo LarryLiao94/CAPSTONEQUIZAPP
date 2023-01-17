@@ -22,13 +22,13 @@ export default function ButtonAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   let history = useHistory();
 
   const loggedSession = useSelector((state) => state.session.user);
-  const menuCategories = useSelector((state) => state.categories);
+  const menuCategories = useSelector((state) => state.categories.categories);
 
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -55,6 +55,8 @@ export default function ButtonAppBar() {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  console.log(Object.values(menuCategories))
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -83,7 +85,8 @@ export default function ButtonAppBar() {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  {Object.keys(menuCategories).map((category) => (
+                    Categories
+                  {Object.values(menuCategories).map((category) => (
                     <MenuItem
                       key={category.id}
                       onClick={() => handleCategoryClick(category.id)}

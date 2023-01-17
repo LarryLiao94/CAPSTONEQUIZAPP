@@ -24,9 +24,9 @@ def seed():
         undo_users()
     seed_users()
     seed_categories()
+    seed_quizzes()
     seed_questions()
     seed_choices()
-    seed_quizzes()
     seed_user_questions()
     seed_progress()
     # Add other seed functions here

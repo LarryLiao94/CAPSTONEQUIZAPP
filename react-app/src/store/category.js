@@ -21,8 +21,8 @@ export const getAllCategoriesThunk = () => async (dispatch) => {
 
   if (res.ok) {
     const data = {};
-    categories.forEach((category) => (categories[category.id] = category));
-    dispatch(getAllCategories(categories));
+    categories.forEach((category) => (data[category.id] = category));
+    dispatch(getAllCategories(data));
   }
   return res;
 };
