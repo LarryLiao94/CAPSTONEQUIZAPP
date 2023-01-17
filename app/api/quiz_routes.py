@@ -61,7 +61,6 @@ def get_quiz_by_id(id):
 @login_required
 def get_all_quizzes():
     quizzes = Quiz.query.all()
-    print(quizzes[0].questions, 'AOISDFJAOWIFJAO;WEIF')
     return jsonify({
         'quizzes': [quiz.to_dict() for quiz in quizzes]
     })
