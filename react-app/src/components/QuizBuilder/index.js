@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  Switch,
-  Container,
-} from '@material-ui/core';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Checkbox from '@mui/material/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 
 function CreateQuiz() {
   const classes = useStyles();
-  const [quiz, setQuiz] = useState({ title: '', questions: [] });
-  const [question, setQuestion] = useState({ question_text: '', choices: [] });
+  const [quiz, setQuiz] = useState({ title: '', questions: [{ question_text: '', choices: [{ choice: '', is_correct: false }]}]} );
+  const [question, setQuestion] = useState({ question_text: '', choices: [{ choice: '', is_correct: false }] });
   const [choice, setChoice] = useState({ choice: '', is_correct: false });
 
   const handleQuizChange = (event) => {
@@ -34,6 +30,7 @@ function CreateQuiz() {
   };
 
   const handleQuestionChange = (event) => {
+    console.log(event)
     setQuestion({ ...question, [event.target.name]: event.target.value });
   };
 
@@ -45,12 +42,13 @@ function CreateQuiz() {
     setChoice({ ...choice, is_correct: event.target.checked });
   };
 
-  const handleAddQuestion = () => {
+  const handleAddQuestion = (event) => {
     setQuiz({ ...quiz, questions: [...quiz.questions, question] });
-    setQuestion({ questiontext: '', choices: [] });
+    setQuestion({ question_text: '', choices: [{ choice: '', is_correct: false }] });
   };
 
-  const handleAddChoice = () => {
+  const handleAddChoice = (event) => {
+    console.log(event)
     setQuestion({ ...question, choices: [...question.choices, choice] });
     setChoice({ choice: '', is_correct: false });
   };
@@ -62,66 +60,71 @@ function CreateQuiz() {
   };
 
   return (
-    <form className={classes.root}>
-      <Card>
-        <CardContent>
-          <TextField
-            label="Quiz Title"
-            name="title"
-            value={quiz.title}
-            onChange={handleQuizChange}
-            variant="outlined"
-          />
-
-          <List>
-            {quiz.questions.map((q, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={q.questiontext} />
-              </ListItem>
-            ))}
-          </List>
-
-          <TextField
-            label="Question"
-            name="questiontext"
-            value={question.questiontext}
-            onChange={handleQuestionChange}
-            variant="outlined"
-          />
-
-          <List>
-            {question.choices.map((c, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={c.choice} />
-                <ListItemSecondaryAction>
-                  <Switch
-                    checked={c.is_correct}
-                    onChange={handleCorrectChange}
-                    name="is_correct"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-
-          <TextField
-            label="Choice"
-            name="choice"
-            value={choice.choice}
-            onChange={handleChoiceChange}
-            variant="outlined"
-          />
-        </CardContent>
-        <CardActions>
-            <Container>
-          <Button onClick={handleAddQuestion}>Add Question</Button>
-          <Button onClick={handleAddChoice}>Add Choice</Button>
-          </Container>
-        </CardActions>
-      </Card>
-      <Button onClick={handleSubmit}>Submit</Button>
-    </form>
+    <Container maxWidth="false" sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
+      <Stack spacing={10} justifyContent="center" alignItems="center">
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', paddingTop: '50px' }}>
+          <Typography variant="h2" component="h3">
+            Create Quiz
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: '60%',
+            bgcolor: 'white',
+            borderRadius: 2
+          }}
+        >
+          <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+            <TextField
+              id="standard-title"
+              label="Quiz Title"
+              name="title"
+              value={quiz.title}
+              onChange={handleQuizChange}
+              variant="standard"
+            />
+          </FormControl>
+          {quiz.questions.map((q, index) => (
+            <Box key={index + 1}>
+              <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                <TextField
+                  id={index + 1}
+                  label={"Question #" + (index + 1)}
+                  name="questiontext"
+                  onChange={handleQuestionChange}
+                  variant="standard"
+                />
+              </FormControl>
+              {question.choices.map((c, i) => (
+                <Box key={i + 1}>
+                  <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                    <TextField
+                      id={i + 1}
+                      label={"Choice-" + (i + 1)}
+                      name="choice"
+                      onChange={handleChoiceChange}
+                      variant="standard"
+                    />
+                  </FormControl>
+                  <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                    <Typography>
+                      Is Correct: <Checkbox onChange={handleCorrectChange} />
+                    </Typography>
+                  </FormControl>
+                </Box>
+              ))}
+              <Button sx={{ p: 2 }} endIcon={<AddIcon />} onClick={handleAddChoice}>Add Choice</Button>
+            </Box>
+          ))}
+          <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+            <Stack direction="row" spacing={2}>
+              <Button size="large" variant="contained" startIcon={<AddIcon />} onClick={handleAddQuestion}>Add Question</Button>
+              <Button size="large" variant="contained" onClick={handleSubmit} color="secondary">Submit</Button>
+            </Stack>
+          </FormControl>
+        </Box>
+      </Stack>
+    </Container>
   );
 }
 

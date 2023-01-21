@@ -53,7 +53,7 @@ export default function ButtonAppBar() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   console.log(Object.values(menuCategories))
@@ -65,52 +65,53 @@ export default function ButtonAppBar() {
           <IconButton edge="start" color="inherit" aria-label="menu">
             <HomeIcon onClick={() => history.push("/dashboard")} />
           </IconButton>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            {loggedSession ? (
-              <>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  Hello, {loggedSession.username}
-                </Typography>
-                <IconButton
-                  aria-controls="categories-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="categories-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                    Categories
-                  {Object.values(menuCategories).map((category) => (
-                    <MenuItem
-                      key={category.id}
-                      onClick={() => handleCategoryClick(category.id)}
-                    >
-                      {category.title}
-                    </MenuItem>
-                  ))}
-                </Menu>
-                <LogoutButton onClick={() => setIsLoggedIn(false)} />
-              </>
-            ) : (
-              <>
-                <Button color="inherit" onClick={() => history.push("/login")}>
-                  Login
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={() => history.push("/sign-up")}
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
-          </Box>
+          {loggedSession ? (
+            <>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Hello, {loggedSession.username}
+              </Typography>
+              <IconButton
+                aria-controls="categories-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="categories-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                  Categories
+                {Object.values(menuCategories).map((category) => (
+                  <MenuItem
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category.id)}
+                  >
+                    {category.title}
+                  </MenuItem>
+                ))}
+              </Menu>
+              <LogoutButton onClick={() => setIsLoggedIn(false)} />
+            </>
+          ) : (
+            <>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Quiz App
+              </Typography>
+              <Button color="inherit" onClick={() => history.push("/login")}>
+                Login
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => history.push("/sign-up")}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

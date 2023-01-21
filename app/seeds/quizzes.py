@@ -4,12 +4,14 @@ from app.models import db, Quiz, environment, SCHEMA
 def seed_quizzes():
     quiz1 = Quiz(user_id=1, title="test quiz 1")
     quiz2 = Quiz(user_id=1, title="test quiz 2")
+    quiz3 = Quiz(user_id=1, title="QUIZGANG")
     # question1 = Question(user_id=1, category_id=1, quiz_id=2, question_text="test question 3")
     # question1 = Question(user_id=1, category_id=2, quiz_id=2, question_text="test question 4")
 
 
     db.session.add(quiz1)
     db.session.add(quiz2)
+    db.session.add(quiz3)
     db.session.commit()
 
 # Uses a raw SQL query to TRUNCATE or DELETE the users table. SQLAlchemy doesn't

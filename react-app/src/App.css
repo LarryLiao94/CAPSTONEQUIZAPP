@@ -1,8 +1,40 @@
-
-.App {
+.left {
+    background-color: #0d6efd;
+    height: 100vh;
+  }
+  .headings {
+    width: 100%;
+    color: white;
+    margin: auto;
+    margin-left: 10em;
+    padding-top: 15em;
+  }
+  .App {
     background-color: white;
   }
   
+  .auth {
+    width: 100%;
+  }
+  
+  
+  .landing_page a {
+      display: block;
+      background-color: #0d6efd;
+    width: 25%;
+    height: 50px;
+    border-radius: 20px;
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    margin-left: 250px;
+      padding-top: 10px;
+    margin-top: 20px;
+  }
+  .landing_page a:hover {
+      font-size: 20px;
+      color: white;
+  }
   .Auth-form-container {
     display: flex;
     justify-content: center;
@@ -40,5 +72,5 @@
   }
   
   .invalid-feedback {
-    
   }
+  

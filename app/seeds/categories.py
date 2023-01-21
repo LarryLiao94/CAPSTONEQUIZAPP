@@ -6,9 +6,11 @@ def seed_categories():
         title='A'
     )
     cat2 = Category(title='B')
+    cat3 = Category(title='Testing')
 
     db.session.add(cat1)
     db.session.add(cat2)
+    db.session.add(cat3)
     db.session.commit()
 
 def undo_categories():
