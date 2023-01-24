@@ -24,6 +24,7 @@ function CreateQuiz() {
   const [quiz, setQuiz] = useState({ title: '', questions: [{ question_text: '', choices: [{ choice: '', is_correct: false }]}]} );
   const [question, setQuestion] = useState({ question_text: '', choices: [{ choice: '', is_correct: false }] });
   const [choice, setChoice] = useState({ choice: '', is_correct: false });
+  const [correctChoice, setCorrectChoice] = useState(-1);
 
   const handleQuizChange = (event) => {
     setQuiz({ ...quiz, [event.target.name]: event.target.value });
@@ -38,10 +39,17 @@ function CreateQuiz() {
     setChoice({ ...choice, [event.target.name]: event.target.value });
   };
 
-  const handleCorrectChange = (event) => {
-    setChoice({ ...choice, is_correct: event.target.checked });
-  };
-
+  // const handleCorrectChange = (event) => {
+  //   setChoice({ ...choice, is_correct: event.target.checked });
+  // };
+  const handleCorrectChange = (event, index) => {
+    if (index === correctChoice) {
+      setCorrectChoice(-1);
+    } else {
+      setCorrectChoice(index);
+    }
+  }
+  
   const handleAddQuestion = (event) => {
     setQuiz({ ...quiz, questions: [...quiz.questions, question] });
     setQuestion({ question_text: '', choices: [{ choice: '', is_correct: false }] });
@@ -97,21 +105,25 @@ function CreateQuiz() {
               </FormControl>
               {question.choices.map((c, i) => (
                 <Box key={i + 1}>
-                  <FormControl fullWidth sx={{ p: 2 }} variant="filled">
-                    <TextField
-                      id={i + 1}
-                      label={"Choice-" + (i + 1)}
-                      name="choice"
-                      onChange={handleChoiceChange}
-                      variant="standard"
+                <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                  <TextField
+                    id={i + 1}
+                    label={"Choice-" + (i + 1)}
+                    name="choice"
+                    onChange={handleChoiceChange}
+                    variant="standard"
+                  />
+                </FormControl>
+                <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                  <Typography>
+                    Is Correct: 
+                    <Checkbox
+                      checked={i === correctChoice}
+                      onChange={(event) => handleCorrectChange(event, i)}
                     />
-                  </FormControl>
-                  <FormControl fullWidth sx={{ p: 2 }} variant="filled">
-                    <Typography>
-                      Is Correct: <Checkbox onChange={handleCorrectChange} />
-                    </Typography>
-                  </FormControl>
-                </Box>
+                  </Typography>
+                </FormControl>
+              </Box>
               ))}
               <Button sx={{ p: 2 }} endIcon={<AddIcon />} onClick={handleAddChoice}>Add Choice</Button>
             </Box>
