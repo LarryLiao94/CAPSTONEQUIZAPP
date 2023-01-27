@@ -45,12 +45,12 @@ export default function ButtonAppBar() {
   };
 
   const handleCreateQuestionClick = () => {
-    // handle creating a question here
+    history.push('/questions/new')
     handleCreateMenuClose();
   };
 
   const handleCreateQuizClick = () => {
-    // handle creating a quiz here
+    history.push('/quiz')
     handleCreateMenuClose();
   };
 

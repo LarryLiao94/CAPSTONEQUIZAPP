@@ -13,6 +13,7 @@ import Dashboard from "./components/Dashboard";
 import QuizBuilder from "./components/QuizBuilder";
 import LandingPage from "./components/LandingPage";
 import Category from "./components/Category";
+import QuestionBuilder from "./components/QuestionBuilder"
 import "./App.css";
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -59,6 +60,9 @@ function App() {
         </Route>
         <Route exact path="/quiz">
           <QuizBuilder />
+        </Route>
+        <Route path="/questions/new">
+          <QuestionBuilder />
         </Route>
       </Switch>
     </BrowserRouter>

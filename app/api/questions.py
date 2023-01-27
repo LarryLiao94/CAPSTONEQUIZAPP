@@ -8,7 +8,7 @@ question_routes = Blueprint('questions', __name__)
 
 
 @question_routes.route('/', methods=['POST'])
-@login_required
+# @login_required
 def create_question():
     # import ipdb; ipdb.set_trace()
     form = QuestionForm(csrf_enabled=False)

@@ -11,6 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import { addQuizThunk } from '../../store/quiz';
 import { useDispatch } from 'react-redux';
+import { addQuestionThunk } from '../../store/question';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CreateQuiz() {
+function CreateQuestion() {
   const classes = useStyles();
   const [quiz, setQuiz] = useState({ title: '', questions: [{ question_text: '', choices: [{ choice: '', is_correct: false }]}]} );
   const [question, setQuestion] = useState({ question_text: '', choices: [{ choice: '', is_correct: false }] });
@@ -71,7 +72,7 @@ function CreateQuiz() {
     event.preventDefault();
     try {
       // send quiz data to server and dispatch addQuiz action
-      const newQuiz = await dispatch(addQuizThunk(quiz));
+      const newQuiz = await dispatch(addQuestionThunk(question));
       // navigate to the new quiz's page
       history.push(`/dashboard`);
   } catch (res) {
@@ -88,7 +89,7 @@ function CreateQuiz() {
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: 'flex', flexWrap: 'wrap', paddingTop: '50px' }}>
           <Typography variant="h2" component="h3">
-            Create Quiz
+            Create Question
           </Typography>
         </Box>
         <Box
@@ -98,22 +99,10 @@ function CreateQuiz() {
             borderRadius: 2
           }}
         >
-          <FormControl fullWidth sx={{ p: 2 }} variant="filled">
-            <TextField
-              id="standard-title"
-              label="Quiz Title"
-              name="title"
-              value={quiz.title}
-              onChange={handleQuizChange}
-              variant="standard"
-            />
-          </FormControl>
-          {quiz.questions.map((q, index) => (
-            <Box key={index + 1}>
-              <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+            <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <TextField
-                  id={index + 1}
-                  label={"Question #" + (index + 1)}
+                  id={1}
+                  label="Question #1"
                   name="questiontext"
                   onChange={handleQuestionChange}
                   variant="standard"
@@ -142,11 +131,8 @@ function CreateQuiz() {
               </Box>
               ))}
               <Button sx={{ p: 2 }} endIcon={<AddIcon />} onClick={handleAddChoice}>Add Choice</Button>
-            </Box>
-          ))}
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
             <Stack direction="row" spacing={2}>
-              <Button size="large" variant="contained" startIcon={<AddIcon />} onClick={handleAddQuestion}>Add Question</Button>
               <Button size="large" variant="contained" onClick={handleSubmit} color="secondary">Submit</Button>
             </Stack>
           </FormControl>
@@ -156,4 +142,4 @@ function CreateQuiz() {
   );
 }
 
-export default CreateQuiz;
+export default CreateQuestion;

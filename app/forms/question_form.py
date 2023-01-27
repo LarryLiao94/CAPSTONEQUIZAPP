@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import (TextAreaField, IntegerField, StringField, SubmitField)
+from wtforms import (TextAreaField, IntegerField, StringField, SubmitField, FieldList)
 from wtforms.validators import DataRequired
 
 class QuestionForm(FlaskForm):
     category_id = IntegerField('Category ID', validators=[DataRequired()])
     question_text = StringField('Question', validators=[DataRequired()])
+    choices = FieldList(StringField('Choice', validators=[DataRequired()]))
 
 # {
 #     "category_id" : 2,
