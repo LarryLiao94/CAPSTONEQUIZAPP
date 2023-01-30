@@ -11,7 +11,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Add from "@mui/icons-material/Add";
-import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutButton from "../auth/LogoutButton";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -108,7 +108,12 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            size="large"
+          >
             <HomeIcon onClick={() => history.push("/dashboard")} />
           </IconButton>
           {loggedSession ? (
@@ -116,7 +121,13 @@ export default function ButtonAppBar() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Hello, {loggedSession.username}
               </Typography>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                   <Button
                     style={{ color: "black" }}
@@ -129,6 +140,7 @@ export default function ButtonAppBar() {
                   aria-controls="create-menu"
                   aria-haspopup="true"
                   onClick={handleCreateMenuClick}
+                  size="large"
                 >
                   <Add />
                 </IconButton>
@@ -164,6 +176,7 @@ export default function ButtonAppBar() {
                   aria-controls="user-menu"
                   aria-haspopup="true"
                   onClick={handleUserMenuClick}
+                  size="large"
                 >
                   <AccountCircleOutlinedIcon />
                 </IconButton>
@@ -177,9 +190,7 @@ export default function ButtonAppBar() {
                   <MenuItem component={Link} to={`/users/${loggedSession.id}`}>
                     Profile
                   </MenuItem>
-                  <MenuItem onClick={LogoutButton}>
-                    Logout
-                  </MenuItem>
+                  <MenuItem onClick={LogoutButton}>Logout</MenuItem>
                 </Menu>
               </div>
               {/* <IconButton

@@ -34,6 +34,7 @@ const removeQuiz = (quiz) => ({
 const initialState = {};
 
 export const addQuizThunk = (quiz) => async (dispatch) => {
+  console.log('got here!!!!!', quiz)
   const response = await csrfFetch(`/api/quizzes/`, {
     method: "POST",
     headers: {
@@ -81,9 +82,7 @@ export const getAllQuizzesThunk = () => async (dispatch) => {
   const { quizzes } = await res.json();
 
   if (res.ok) {
-    const data = {};
-    quizzes.forEach((quiz) => (data[quiz.id] = quiz));
-    dispatch(getAllQuizzes(data));
+    dispatch(getAllQuizzes(quizzes));
   }
   return res;
 };
@@ -117,7 +116,7 @@ const quizzesReducer = (state = initialState, action) => {
       newState[action.payload.id] = action.payload;
       return newState;
     case REMOVE_QUIZ:
-      delete newState[action.quiz.id];
+      newState.quizzes = newState.quizzes.filter(n => n.id !== action.quiz )
       return newState;
 
     default:

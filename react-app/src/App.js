@@ -15,9 +15,11 @@ import LandingPage from "./components/LandingPage";
 import Category from "./components/Category";
 import QuestionBuilder from "./components/QuestionBuilder"
 import "./App.css";
-import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
-const theme = createMuiTheme();
+import makeStyles from '@mui/styles/makeStyles';
+
+const theme = createTheme();
 
 const useStyles = makeStyles((theme) => {
   root: {
@@ -41,43 +43,45 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-    <BrowserRouter>
-      <NavBar />
-      <Switch>
-        <Route path="/login" exact={true}>
-          <LoginForm />
-        </Route>
-        <Route path="/sign-up" exact={true}>
-          <SignUpForm />
-        </Route>
-        <ProtectedRoute path="/users" exact={true}>
-          <UsersList />
-        </ProtectedRoute>
-        <ProtectedRoute path="/users/:userId" exact={true}>
-          <User />
-        </ProtectedRoute>
-        <Route path="/" exact={true}>
-          <LandingPage />
-        </Route>
-        <Route path="/quiz/:id">
-          <Quiz />
-        </Route>
-        <Route path="/categories/:id">
-          <Category />
-        </Route>
-        <Route path="/dashboard">
-          <Dashboard />
-        </Route>
-        <Route exact path="/quiz">
-          <QuizBuilder />
-        </Route>
-        <Route path="/questions/new">
-          <QuestionBuilder />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <NavBar />
+        <Switch>
+          <Route path="/login" exact={true}>
+            <LoginForm />
+          </Route>
+          <Route path="/sign-up" exact={true}>
+            <SignUpForm />
+          </Route>
+          <ProtectedRoute path="/users" exact={true}>
+            <UsersList />
+          </ProtectedRoute>
+          <ProtectedRoute path="/users/:userId" exact={true}>
+            <User />
+          </ProtectedRoute>
+          <Route path="/" exact={true}>
+            <LandingPage />
+          </Route>
+          <Route path="/quiz/:id">
+            <Quiz />
+          </Route>
+          <Route path="/categories/:id">
+            <Category />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route exact path="/quiz">
+            <QuizBuilder />
+          </Route>
+          <Route path="/questions/new">
+            <QuestionBuilder />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

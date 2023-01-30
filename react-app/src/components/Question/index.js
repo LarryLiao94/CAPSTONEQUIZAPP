@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import { Box, Typography, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { getAllQuestionsThunk } from "../../store/question";
 import { useSelector, useDispatch } from "react-redux";
 
