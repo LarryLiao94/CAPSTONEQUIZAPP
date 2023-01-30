@@ -15,6 +15,16 @@ import LandingPage from "./components/LandingPage";
 import Category from "./components/Category";
 import QuestionBuilder from "./components/QuestionBuilder"
 import "./App.css";
+import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+
+const theme = createMuiTheme();
+
+const useStyles = makeStyles((theme) => {
+  root: {
+    // some CSS that accesses the theme
+  }
+});
+
 function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
@@ -31,6 +41,7 @@ function App() {
   }
 
   return (
+    <ThemeProvider theme={theme}>
     <BrowserRouter>
       <NavBar />
       <Switch>
@@ -66,6 +77,7 @@ function App() {
         </Route>
       </Switch>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

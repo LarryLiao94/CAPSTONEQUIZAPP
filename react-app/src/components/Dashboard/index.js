@@ -60,12 +60,13 @@ function Dashboard() {
           </Grid>
         ))}
       </Grid> */}
-      <Grid container spacing={5} sx={{ paddingTop: "50px" }}>
+      <Grid id="quiz-card-wrapper" container spacing={5} sx={{ paddingTop: "50px" }}>
         {Object.keys(quizzes).map((key) => (
           <Grid item xs={12} md={6} lg={4} key={key}>
             <Card sx={{ bgcolor: "#cfe8fc" }}>
               <CardActionArea
                 onClick={() => history.push(`/quiz/${quizzes[key].id}`)}
+                className="quiz-card"
               >
                 <CardContent>
                   <Typography variant="h5">{quizzes[key].title}</Typography>
@@ -76,7 +77,7 @@ function Dashboard() {
                 <CardActions>
                   <IconButton
                     aria-label="edit"
-                    className='edit-icon'
+                    className="edit-icon"
                     onClick={() => {
                       // Dispatch 'edit quiz' action
                       // and pass the quiz id and current title as payload

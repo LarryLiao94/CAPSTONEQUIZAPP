@@ -19,6 +19,7 @@ import {
   getAllCategoriesThunk,
   getCategoryByIdThunk,
 } from "../../store/category";
+import { logout } from "../../store/session";
 
 export default function ButtonAppBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,12 +46,12 @@ export default function ButtonAppBar() {
   };
 
   const handleCreateQuestionClick = () => {
-    history.push('/questions/new')
+    history.push("/questions/new");
     handleCreateMenuClose();
   };
 
   const handleCreateQuizClick = () => {
-    history.push('/quiz')
+    history.push("/quiz");
     handleCreateMenuClose();
   };
 
@@ -90,6 +91,11 @@ export default function ButtonAppBar() {
   const handleCategoryClick = (id) => {
     handleClose();
     history.push(`/categories/${id}`);
+  };
+
+  const LogoutButton = async () => {
+    await dispatch(logout());
+    await history.push("/");
   };
 
   if (loading) {
@@ -171,7 +177,7 @@ export default function ButtonAppBar() {
                   <MenuItem component={Link} to={`/users/${loggedSession.id}`}>
                     Profile
                   </MenuItem>
-                  <MenuItem onClick={() => setIsLoggedIn(false)}>
+                  <MenuItem onClick={LogoutButton}>
                     Logout
                   </MenuItem>
                 </Menu>
