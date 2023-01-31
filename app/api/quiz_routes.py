@@ -19,12 +19,16 @@ def create_quiz():
         db.session.commit()
 
         # Get the list of question ids from the request data
-        # question_ids = json.loads(request.data)["question_ids"]
+        # submitted_questions = json.loads(request.data)["questions"]
         # # Fetch the questions from the database using the ids
-        # questions = Question.query.filter(Question.id.in_(question_ids)).all()
         # # Add the questions to the quiz
-        # for question in questions:
-        #     quiz.questions.append(question)
+        # for question in submitted_questions:
+        #     new_question = Question(
+        #         quiz_id = quiz.id,
+        #         category_id = 1,
+        #         user_id=current_user.id,
+        #         question_text = question["question_text"]
+        #     )
 
         # db.session.commit()
         return jsonify({'quiz': quiz.to_dict()}), 201
