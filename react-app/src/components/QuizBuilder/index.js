@@ -60,7 +60,7 @@ function CreateQuiz() {
     event.preventDefault();
     const quizItem = { title, questions: quiz };
     console.log('quizItem!!!', quizItem)
-    await dispatch(addQuizThunk({ title }));
+    await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
     history.push(`/dashboard`);
     console.log(quiz);
   };

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, json
 from flask_login import current_user, login_required
-from app.models import Quiz, db, User, Question
+from app.models import Quiz, db, User, Question, Choice
 from app.forms.quiz_form import QuizForm
 
 quiz_routes = Blueprint('quizzes', __name__)
@@ -18,19 +18,28 @@ def create_quiz():
         db.session.add(quiz)
         db.session.commit()
 
-        # Get the list of question ids from the request data
-        # submitted_questions = json.loads(request.data)["questions"]
-        # # Fetch the questions from the database using the ids
-        # # Add the questions to the quiz
-        # for question in submitted_questions:
-        #     new_question = Question(
-        #         quiz_id = quiz.id,
-        #         category_id = 1,
-        #         user_id=current_user.id,
-        #         question_text = question["question_text"]
-        #     )
+        for question in json.loads(request.data)["questions"]:
+            print('AWPIOEJFAOWIEJFA', question)
+            new_question = Question(
+                quiz_id = quiz.id,
+                question_text = question["question_text"],
+                category_id = 1,
+                user_id = current_user.id
+            )
+            db.session.add(new_question)
+            db.session.commit()
+            
+            submitted_choices = question["choices"]
+            for choice in submitted_choices:
+                new_choice = Choice(
+                    question_id = new_question.id,
+                    choice = choice["choice"],
+                    is_correct = choice["is_correct"]
+                )
+                db.session.add(new_choice)
+            db.session.commit()
 
-        # db.session.commit()
+        
         return jsonify({'quiz': quiz.to_dict()}), 201
     else:
         return jsonify({'error': form.errors}), 400

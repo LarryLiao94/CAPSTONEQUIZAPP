@@ -44,8 +44,10 @@ export const addQuizThunk = (quiz) => async (dispatch) => {
   });
   if (response.ok) {
     const newQuiz = await response.json();
+    console.log('?>>>>>>>>>>>>>', newQuiz)
     dispatch(addQuiz(newQuiz));
   }
+  console.log('asodfijaweo;ifja', response)
   return response;
 };
 

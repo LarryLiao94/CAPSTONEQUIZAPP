@@ -1,0 +1,7 @@
+.answer.correct {
+    background-color: lightgreen;
+  }
+  
+  .answer.incorrect {
+    background-color: lightcoral;
+  }

@@ -12,12 +12,18 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { getQuizByIdThunk } from "../../store/quiz";
 import {useSelector, useDispatch} from "react-redux";
+import { Snackbar, IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import './Quiz.css'
 
 function Quiz() {
     const [quiz, setQuiz] = useState({});
     const [loading, setLoading] = useState(true);
     const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [open, setOpen] = useState(false);
+    const [correctAnswers, setCorrectAnswers] = useState(0);
     const [color, setColor] = useState("");
+    const [selectedAnswer, setSelectedAnswer] = useState();
 
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -35,22 +41,39 @@ function Quiz() {
     if (loading) {
         return <div>Loading...</div>;
       }
-  
+
+      
+      const handleChoiceClick = (answer) => {
+        setSelectedAnswer(answer);
+      }
     const handleSubmit = () => {
       // Handle form submission here
       console.log("Form submitted");
       let correctAnswers = 0;
       quizzes.questions.forEach((question) => {
           const chosenAnswer = question.choices.find((choice) => choice.id === selectedAnswers[question.id])
+          const correctAnswer = question.choices.find((choice) => choice.is_correct);
+          setSelectedAnswer({
+            ...selectedAnswer,
+            [question.id]: chosenAnswer
+          });
           if(chosenAnswer.is_correct){
-                setColor("green")
+              setColor(chosenAnswer.id, "green");
               correctAnswers++
+              setCorrectAnswers(correctAnswers + 1);
           }
           else{
-            setColor("red")
+            setColor(chosenAnswer.id, "red");
+            setColor(correctAnswer.id, "green");
           }
       });
+    
       console.log(`You got ${correctAnswers} out of ${quizzes.questions.length} correct`);
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
     };
     
     return (
@@ -82,7 +105,8 @@ function Quiz() {
                   {question.choices.map((choice) => (
                     <FormControlLabel 
                       key={choice.id}
-                      value={choice.id} 
+                      value={choice.id}
+                      className={`answer ${selectedAnswer && selectedAnswer.is_correct ? "correct" : ""} ${selectedAnswer && !selectedAnswer.is_correct ? "incorrect" : ""}`} 
                       control={
                       <Radio 
                         checked={selectedAnswers[question.id] === choice.id}
@@ -108,6 +132,17 @@ function Quiz() {
             </Stack>
           </FormControl>
         </Stack>
+        <Snackbar
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      open={open}
+      onClose={handleClose}
+      message={`You got ${correctAnswers - 1} out of ${quizzes.questions.length} correct`}
+      action={
+        <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      }
+    />
       </Container>
     );
   }

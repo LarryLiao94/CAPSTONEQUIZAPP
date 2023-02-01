@@ -110,6 +110,9 @@ const SignUpForm = () => {
               Submit
             </button>
           </div>
+          <div className="text-center mt-2">
+            <small>Already have an account? <a href="/login">Sign in here!</a></small>
+          </div>
         </div>
       </form>
     </div>

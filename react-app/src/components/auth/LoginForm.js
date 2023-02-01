@@ -73,11 +73,17 @@ const LoginForm = () => {
               {error}
             </div>
           ))}
-
+  
           <div className="d-grid gap-2 mt-3">
             <button type="submit" className="btn btn-primary">
               Submit
             </button>
+            <button type="button" className="btn btn-primary" onClick={handleGuestLogin}>
+              Demo Login
+            </button>
+          </div>
+          <div className="text-center mt-2">
+            <small>Don't have an account? <a href="/sign-up">Create one here!</a></small>
           </div>
         </div>
       </form>
