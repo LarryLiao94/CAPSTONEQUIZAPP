@@ -13,11 +13,12 @@ import Dashboard from "./components/Dashboard";
 import QuizBuilder from "./components/QuizBuilder";
 import LandingPage from "./components/LandingPage";
 import Category from "./components/Category";
-import QuestionBuilder from "./components/QuestionBuilder"
+import QuestionBuilder from "./components/QuestionBuilder";
 import "./App.css";
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
 import makeStyles from '@mui/styles/makeStyles';
+import EditQuiz from "./components/EditQuiz";
 
 const theme = createTheme();
 
@@ -63,7 +64,10 @@ function App() {
           <Route path="/" exact={true}>
             <LandingPage />
           </Route>
-          <Route path="/quiz/:id">
+          <Route path="/quiz/edit/:id" exact={true}>
+            <EditQuiz />
+          </Route>
+          <Route path="/quiz/:id" exact={true}>
             <Quiz />
           </Route>
           <Route path="/categories/:id">

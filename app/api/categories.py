@@ -6,7 +6,7 @@ category_routes = Blueprint('categories', __name__)
 
 #get all questions
 @category_routes.route('/')
-@login_required
+# @login_required
 def get_all_categories():
     categories = Category.query.all()
     print(categories[0].questions, 'HASOIDJFAOISDJF')

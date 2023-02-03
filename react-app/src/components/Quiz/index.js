@@ -136,7 +136,7 @@ function Quiz() {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       open={open}
       onClose={handleClose}
-      message={`You got ${correctAnswers - 1} out of ${quizzes.questions.length} correct`}
+      message={`You got ${correctAnswers - 1} out of ${quizzes?.questions?.length} correct`}
       action={
         <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
           <CloseIcon fontSize="small" />

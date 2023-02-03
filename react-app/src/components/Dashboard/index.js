@@ -69,16 +69,7 @@ function Dashboard() {
                   <IconButton
                     aria-label="edit"
                     className="edit-icon"
-                    onClick={() => {
-                      // Dispatch 'edit quiz' action
-                      // and pass the quiz id and current title as payload
-                      dispatch(
-                        editQuizThunk({
-                          id,
-                          title,
-                        })
-                      );
-                    }}
+                    onClick={() => history.push(`/quiz/edit/${id}`)}
                   >
                     <EditIcon />
                   </IconButton>

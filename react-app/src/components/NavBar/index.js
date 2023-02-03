@@ -61,6 +61,7 @@ export default function ButtonAppBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setUserAnchorEl(null);
   };
 
   const handleUserMenuClick = (event) => {
@@ -94,6 +95,7 @@ export default function ButtonAppBar() {
   };
 
   const LogoutButton = async () => {
+    handleClose();
     await dispatch(logout());
     await history.push("/");
   };
@@ -101,6 +103,8 @@ export default function ButtonAppBar() {
   if (loading) {
     return null;
   }
+
+  console.log({BOOLEANCHANGE: Boolean(userAnchorEl)})
 
   console.log(Object.values(menuCategories));
 
@@ -185,6 +189,7 @@ export default function ButtonAppBar() {
                   anchorEl={userAnchorEl}
                   keepMounted
                   open={Boolean(userAnchorEl)}
+                  // onOpen={() => alert('helo')}
                   onClose={handleUserMenuClose}
                 >
                   <MenuItem component={Link} to={`/users/${loggedSession.id}`}>

@@ -1,3 +1,9 @@
+//step 1: grab quiz id from url,
+//step 2: load quiz data into the form
+//step 3: form validation
+//step 4: dispatch put request for any changes made
+//step 5: display message for succesful edit
+
 import React, { useEffect, useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import Container from "@mui/material/Container";
@@ -11,35 +17,29 @@ import FormControl from "@mui/material/FormControl";
 import Checkbox from "@mui/material/Checkbox";
 import { addQuizThunk } from "../../store/quiz";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { getQuizByIdThunk } from "../../store/quiz";
+import { useSelector } from "react-redux";
+import { csrfFetch } from "../../store/csrf";
+import { getQuiz } from "../../api/quiz";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "25ch",
-    },
-  },
-}));
+function EditQuiz() {
+  const [loading, setLoading] = useState(true);
+  const [quiz, setQuiz] = useState(null);
 
-function CreateQuiz() {
   const history = useHistory();
-  const [quiz, setQuiz] = useState([
-    {
-      question_text: "",
-      choices: [
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-      ],
-      name: `name${1}`,
-    },
-  ]);
 
-  const [title, setTitle] = useState("");
+  const { id } = useParams();
 
-  const dispatch = useDispatch();
+  //   const singleQuiz = useSelector((state) => state.quizzes);
+
+  useEffect(async () => {
+    const quizData = await getQuiz(id)
+    if(quizData?.title){
+        setQuiz(quizData)
+        setLoading(false)
+    }
+  }, [id]);
 
   const handleAddQuestion = () => {
     const newQuestion = {
@@ -60,12 +60,14 @@ function CreateQuiz() {
     event.preventDefault();
     const quizItem = { title, questions: quiz };
     console.log("quizItem!!!", quizItem);
-    await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
-    history.push(`/dashboard`);
+    // await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
+    // history.push(`/dashboard`);
     console.log(quiz);
   };
 
-  const handleTitleChange = (e) => setTitle(e.target.value);
+//   const handleTitleChange = (e) => setTitle(e.target.value);
+
+  const handleChange = (e) => setQuiz({...quiz, [e.target.name]:e.target.value})
 
   const handleCheckBox = (e, index) => {
     const name = e.target.name;
@@ -117,9 +119,17 @@ function CreateQuiz() {
     setQuiz(newQuiz);
   };
 
-  // useEffect(() => {
-  //   console.log("quiz>>", quiz)
-  // }, [quiz]);
+  if (loading ) {
+    return <div>Loading...</div>;
+  }
+
+  const { questions, title } = quiz;
+  
+  //hydrate data
+  //make create question callback
+  //make delete question callback
+  //edit question callback
+  //make create and delete choices callback
 
   return (
     <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
@@ -143,16 +153,16 @@ function CreateQuiz() {
               name="title"
               value={title}
               variant="standard"
-              onChange={handleTitleChange}
+              onChange={handleChange}
             />
           </FormControl>
-          {quiz.map((question, index) => (
+          {questions?.map((question, index) => (
             <Box key={index + 1}>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <TextField
-                  id={index + 1}
+                  id={question.id}
                   label={"Question #" + (index + 1)}
-                  name={question.name}
+                  name={question.question_text}
                   variant="standard"
                   value={question.question_text}
                   onChange={(e) => handleQuestiontTextChange(e)}
@@ -210,4 +220,4 @@ function CreateQuiz() {
   );
 }
 
-export default CreateQuiz;
+export default EditQuiz;
