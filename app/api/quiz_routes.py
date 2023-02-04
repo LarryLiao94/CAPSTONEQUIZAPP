@@ -45,13 +45,25 @@ def create_quiz():
         return jsonify({'error': form.errors}), 400
 
 @quiz_routes.route('/<int:id>', methods=['PUT'])
-@login_required
+# @login_required
 def update_quiz(id):
     quiz = Quiz.query.get_or_404(id)
     form = QuizForm(csrf_enabled=False)
     if form.validate():
         quiz.title = form.title.data
         db.session.commit()
+
+        # for question in json.loads(request.data)["questions"]:
+        #     updated_question = Question.query.get_or_404(question["id"])
+        #     updated_question.question_text = question["question_text"]
+        #     db.session.commit()
+
+        #     submitted_choices = question["choices"]
+        #     for choice in submitted_choices:
+        #         updated_choice = Choice.query.get_or_404(choice["id"])
+        #         updated_choice.choice = choice["choice"]
+        #         updated_choice.is_correct = choice["is_correct"]
+        #         db.session.commit()
         return jsonify({'quiz': quiz.to_dict()}), 201
     else:
         return jsonify({'error': form.errors}), 400

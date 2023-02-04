@@ -41,7 +41,8 @@ def update_question(id):
     question = Question.query.get_or_404(id)
     form = QuestionForm(csrf_enabled=False)
     if form.validate():
-        question.category_id = form.category_id.data
+        # if form.category_id.data:
+        #     question.category_id = form.category_id.data
         question.question_text = form.question_text.data
         db.session.commit()
         return jsonify({'question': question.to_dict()}), 201

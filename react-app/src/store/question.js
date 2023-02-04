@@ -109,8 +109,8 @@ const questionsReducer = (state = initialState, action) => {
         newState.questions = action.questions;
         return newState;
     case REMOVE_QUESTION:
-        delete newState[action.question.id];
-        return newState
+      newState.questions = newState.questions.filter(n => n.id !== action.question )
+      return newState;
     
     default:
         return state;

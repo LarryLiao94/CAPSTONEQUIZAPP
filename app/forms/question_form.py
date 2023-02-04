@@ -3,7 +3,7 @@ from wtforms import (TextAreaField, IntegerField, StringField, SubmitField, Fiel
 from wtforms.validators import DataRequired
 
 class QuestionForm(FlaskForm):
-    category_id = IntegerField('Category ID', validators=[DataRequired()])
+    category_id = IntegerField('Category ID')
     question_text = StringField('Question', validators=[DataRequired()])
     choices = FieldList(StringField('Choice', validators=[DataRequired()]))
 

@@ -15,66 +15,62 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Checkbox from "@mui/material/Checkbox";
-import { addQuizThunk } from "../../store/quiz";
-import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { getQuizByIdThunk } from "../../store/quiz";
-import { useSelector } from "react-redux";
-import { csrfFetch } from "../../store/csrf";
 import { getQuiz } from "../../api/quiz";
+import { editQuizThunk } from "../../store/quiz";
+import { useDispatch } from "react-redux";
+import { editQuestionThunk } from "../../store/question";
+import { editChoiceThunk } from "../../store/choice";
+import { removeQuestionThunk } from "../../store/question";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { IconButton } from "@mui/material";
 
 function EditQuiz() {
   const [loading, setLoading] = useState(true);
   const [quiz, setQuiz] = useState(null);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const { id } = useParams();
 
-  //   const singleQuiz = useSelector((state) => state.quizzes);
-
   useEffect(async () => {
-    const quizData = await getQuiz(id)
-    if(quizData?.title){
-        setQuiz(quizData)
-        setLoading(false)
+    const quizData = await getQuiz(id);
+    if (quizData?.title) {
+      console.log("quizz data", quizData);
+      setQuiz(quizData);
+      setLoading(false);
     }
   }, [id]);
-
-  const handleAddQuestion = () => {
-    const newQuestion = {
-      question_text: "",
-      choices: [
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-        { choice: "", is_correct: false },
-      ],
-      name: `name${quiz.length + 1}`,
-    };
-
-    setQuiz((prevState) => [...prevState, newQuestion]);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const quizItem = { title, questions: quiz };
     console.log("quizItem!!!", quizItem);
-    // await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
-    // history.push(`/dashboard`);
+    await dispatch(editQuizThunk(id, { title: quiz.title }));
+    quiz.questions.forEach(async (q) => {
+      await dispatch(
+        editQuestionThunk(q.id, { question_text: q.question_text })
+      );
+      q.choices.forEach(async (c) => {
+        await dispatch(editChoiceThunk(c.id, { choice: c.choice }));
+      });
+    });
+    history.push(`/dashboard`);
     console.log(quiz);
   };
 
-//   const handleTitleChange = (e) => setTitle(e.target.value);
+  //   const handleTitleChange = (e) => setTitle(e.target.value);
 
-  const handleChange = (e) => setQuiz({...quiz, [e.target.name]:e.target.value})
+  const handleChange = (e) =>
+    setQuiz({ ...quiz, [e.target.name]: e.target.value });
 
-  const handleCheckBox = (e, index) => {
-    const name = e.target.name;
-    const newQuiz = quiz.map((q) => {
-      if (q.name === name) {
-        q.choices.map((c, i) => {
-          if (index === i) {
+  const handleCheckBox = (e, itemID) => {
+    const id = e.target.id;
+    const newQuiz = quiz.questions.map((q) => {
+      if (q.id === Number(id)) {
+        q.choices.map((c) => {
+          if (c.id === itemID) {
             c.is_correct = !c.is_correct;
           } else {
             c.is_correct = false;
@@ -85,16 +81,19 @@ function EditQuiz() {
       return q;
     });
 
-    setQuiz(newQuiz);
+    let getQuiz = quiz;
+    getQuiz.questions = newQuiz;
+
+    setQuiz(getQuiz);
   };
 
-  const handleChoiceChange = (e, index) => {
+  const handleChoiceChange = (e, itemID) => {
     const value = e.target.value;
-    const name = e.target.name;
-    const newQuiz = quiz.map((q) => {
-      if (q.name === name) {
-        q.choices.map((c, i) => {
-          if (index === i) {
+    const id = e.target.id;
+    const newQuiz = quiz.questions.map((q) => {
+      if (q.id === Number(id)) {
+        q.choices.map((c) => {
+          if (c.id === itemID) {
             c.choice = value;
           }
           return c;
@@ -103,28 +102,38 @@ function EditQuiz() {
       return q;
     });
 
-    setQuiz(newQuiz);
+    let getQuiz = quiz;
+    getQuiz.questions = newQuiz;
+
+    setQuiz(getQuiz);
   };
 
   const handleQuestiontTextChange = (e) => {
     const value = e.target.value;
-    const name = e.target.name;
-    const newQuiz = quiz.map((q) => {
-      if (q.name === name) {
+    const id = e.target.id;
+    const newQuiz = quiz.questions.map((q) => {
+      if (q.id === Number(id)) {
         q.question_text = value;
       }
       return q;
     });
 
-    setQuiz(newQuiz);
+    let getQuiz = quiz;
+    getQuiz.questions = newQuiz;
+
+    setQuiz(getQuiz);
   };
 
-  if (loading ) {
+  useEffect(() => {
+    console.log("quizz", quiz);
+  }, [quiz]);
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
   const { questions, title } = quiz;
-  
+
   //hydrate data
   //make create question callback
   //make delete question callback
@@ -136,7 +145,7 @@ function EditQuiz() {
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2" component="h3">
-            Create Quiz
+            Edit Quiz
           </Typography>
         </Box>
         <Box
@@ -162,31 +171,30 @@ function EditQuiz() {
                 <TextField
                   id={question.id}
                   label={"Question #" + (index + 1)}
-                  name={question.question_text}
                   variant="standard"
-                  value={question.question_text}
+                  defaultValue={question.question_text}
                   onChange={(e) => handleQuestiontTextChange(e)}
                 />
               </FormControl>
               {question.choices.map((c, i) => (
-                <Box key={i + 1}>
+                <Box key={c.EditQuiz}>
                   <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                     <TextField
-                      id={i + 1}
+                      id={question.id}
                       label={"Choice-" + (i + 1)}
-                      name={question.name}
                       variant="standard"
-                      value={c.choice}
-                      onChange={(event) => handleChoiceChange(event, i)}
+                      defaultValue={c.choice}
+                      onChange={(event) => handleChoiceChange(event, c.id)}
                     />
                   </FormControl>
                   <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                     <Typography>
                       Is Correct:
                       <Checkbox
-                        checked={c.is_correct}
-                        name={question.name}
-                        onChange={(event) => handleCheckBox(event, i)}
+                        defaultChecked={c.is_correct}
+                        id={question.id}
+                        name={"quesion-" + question.id}
+                        onChange={(event) => handleCheckBox(event, c.id)}
                       />
                     </Typography>
                   </FormControl>
@@ -196,14 +204,6 @@ function EditQuiz() {
           ))}
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
             <Stack direction="row" spacing={2}>
-              <Button
-                size="large"
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={handleAddQuestion}
-              >
-                Add Question
-              </Button>
               <Button
                 size="large"
                 variant="contained"

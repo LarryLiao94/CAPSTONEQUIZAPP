@@ -19,8 +19,10 @@ import "./Dashboard.css";
 function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [currentTitle, setCurrentTitle] = useState("");
+  
 
   const { quizzes } = useSelector((state) => state.quizzes);
+  // const { user } = useSelector((state) => state.session.user)
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -55,7 +57,7 @@ function Dashboard() {
         sx={{ paddingTop: "50px" }}
       >
         {quizzes.map((quiz) => {
-          const { id, title, description } = quiz;
+          const { id, title, description, user_id } = quiz;
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
               <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
@@ -66,6 +68,8 @@ function Dashboard() {
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
+                  
+                  <>
                   <IconButton
                     aria-label="edit"
                     className="edit-icon"
@@ -82,7 +86,9 @@ function Dashboard() {
                   >
                     <DeleteIcon />
                   </IconButton>
+                  </>
                 </CardActions>
+                
               </Card>
             </Grid>
           );

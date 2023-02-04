@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { signUp } from "../../store/session";
+import { useHistory } from "react-router-dom";
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
@@ -11,14 +12,19 @@ const SignUpForm = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSignUp = async (e) => {
     e.preventDefault();
     if (password === repeatPassword) {
-      const data = await dispatch(signUp(username, email, password));
-      if (data) {
-        setErrors(data);
+      try {
+        await dispatch(signUp(username, email, password));
+        
+      } catch (e) {
+        setErrors(e.errors || [e.message]);
       }
+    } else{
+      setErrors(['Password does not match']);
     }
   };
 
@@ -39,7 +45,7 @@ const SignUpForm = () => {
   };
 
   if (user) {
-    return <Redirect to="/" />;
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -57,6 +63,7 @@ const SignUpForm = () => {
               placeholder="Enter Name"
               onChange={updateUsername}
               value={username}
+              required
             ></input>
           </div>
           <div className="form-group mt-3">
@@ -68,6 +75,7 @@ const SignUpForm = () => {
               name="email"
               value={email}
               onChange={updateEmail}
+              required
             />
           </div>
           <div className="form-group mt-3">
@@ -79,17 +87,18 @@ const SignUpForm = () => {
               name="password"
               value={password}
               onChange={updatePassword}
+              required
             />
           </div>
           <div className="form-group mt-3">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Repeat Password</label>
             <input
               type="password"
               className="form-control mt-1"
               placeholder="Enter password"
               name="repeat_password"
-              value={updateRepeatPassword}
-              onChange={repeatPassword}
+              value={repeatPassword}
+              onChange={updateRepeatPassword}
               required={true}
             />
           </div>

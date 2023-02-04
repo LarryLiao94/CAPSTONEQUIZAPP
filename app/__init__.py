@@ -12,6 +12,7 @@ from .api.categories import category_routes
 from .api.progress_routes import progress_routes
 from .api.user_question_routes import user_question_routes
 from .api.quiz_routes import quiz_routes
+from .api.choice_routes import choice_routes
 from .seeds import seed_commands
 from .config import Config
 
@@ -38,6 +39,7 @@ app.register_blueprint(category_routes, url_prefix='/api/categories')
 app.register_blueprint(progress_routes, url_prefix='/api/progress')
 app.register_blueprint(quiz_routes, url_prefix='/api/quizzes')
 app.register_blueprint(user_question_routes, url_prefix='/api/user_questions')
+app.register_blueprint(choice_routes, url_prefix='/api/choices')
 db.init_app(app)
 Migrate(app, db)
 

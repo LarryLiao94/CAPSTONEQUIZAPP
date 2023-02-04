@@ -70,5 +70,7 @@ label {
   color: rgb(34, 34, 34);
 }
 
-.invalid-feedback {
+.css-13gj1l7-MuiContainer-root {
+  height: unset !important;
+  min-height: 100vh;
 }

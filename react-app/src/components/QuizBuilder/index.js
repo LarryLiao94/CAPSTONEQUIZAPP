@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
@@ -54,6 +55,16 @@ function CreateQuiz() {
     };
 
     setQuiz((prevState) => [...prevState, newQuestion]);
+  };
+
+  const handleRemoveQuestion = () => {
+    setQuiz((prevState) => {
+      if (prevState.length > 0) {
+        return prevState.slice(0, prevState.length - 1);
+      } else {
+        return prevState;
+      }
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -194,6 +205,16 @@ function CreateQuiz() {
               >
                 Add Question
               </Button>
+
+              <Button
+                size="large"
+                variant="contained"
+                startIcon={<DeleteIcon />}
+                onClick={handleRemoveQuestion}
+              >
+                Remove Question
+              </Button>
+
               <Button
                 size="large"
                 variant="contained"

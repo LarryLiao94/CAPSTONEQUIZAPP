@@ -12,7 +12,7 @@ class Question(db.Model):
     quiz_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('quizzes.id')), nullable=True)
     question_text = db.Column(db.String(255), nullable=False)
 
-    choices = db.relationship('Choice', primaryjoin="(Question.id==Choice.question_id)", backref='questions', lazy=True)
+    choices = db.relationship('Choice', primaryjoin="(Question.id==Choice.question_id)", backref='questions', lazy=True, cascade="all, delete, delete-orphan")
     user_questions = db.relationship('User_Question', primaryjoin="(Question.id==User_Question.question_id)", backref='questions', lazy=True)
     
 

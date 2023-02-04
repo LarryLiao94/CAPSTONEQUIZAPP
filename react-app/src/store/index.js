@@ -4,12 +4,14 @@ import session from './session';
 import quizzesReducer from './quiz';
 import categoriesReducer from './category';
 import questionsReducer from './question';
+import choicesReducer from './choice';
 
 const rootReducer = combineReducers({
   session,
   quizzes: quizzesReducer,
   categories: categoriesReducer,
-  questions: questionsReducer
+  questions: questionsReducer,
+  choices: choicesReducer
 });
 
 

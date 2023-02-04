@@ -5,6 +5,7 @@ const REMOVE_QUIZ = "quiz/REMOVE_QUIZ";
 const GET_ALL_QUIZZES = "quiz/GET_ALL_QUIZZES";
 const GET_QUIZ_BY_ID = "quiz/GET_QUIZ_BY_ID";
 const EDIT_QUIZ = "quiz/EDIT_QUIZ";
+const UPADTE_QUIZ_SUBMIT = "quiz/UPADTE_QUIZ_SUBMI"
 
 const addQuiz = (quiz) => ({
   type: ADD_QUIZ,
@@ -28,6 +29,11 @@ const getQuizById = (quiz) => ({
 
 const removeQuiz = (quiz) => ({
   type: REMOVE_QUIZ,
+  quiz,
+});
+
+export const updateQuizSubmit = (quiz) => ({
+  type: UPADTE_QUIZ_SUBMIT,
   quiz,
 });
 
@@ -71,7 +77,7 @@ export const getQuizByIdThunk = (id) => async (dispatch) => {
 
   const data = await res.json();
 
-  console.log(data);
+  console.log("data", data);
 
   if (res.ok) {
     dispatch(getQuizById(data));
@@ -109,6 +115,8 @@ const quizzesReducer = (state = initialState, action) => {
       newState = { ...state, ...action.payload };
       return newState;
     case GET_QUIZ_BY_ID:
+      return { ...action.quiz };
+    case UPADTE_QUIZ_SUBMIT:
       return { ...action.quiz };
     case GET_ALL_QUIZZES:
       newState.quizzes = action.quizzes;
