@@ -192,7 +192,7 @@ export default function ButtonAppBar() {
                   // onOpen={() => alert('helo')}
                   onClose={handleUserMenuClose}
                 >
-                  <MenuItem component={Link} to={`/users/${loggedSession.id}`}>
+                  <MenuItem component={Link} to={`/profile`}>
                     Profile
                   </MenuItem>
                   <MenuItem onClick={LogoutButton}>Logout</MenuItem>

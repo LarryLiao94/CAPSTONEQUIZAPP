@@ -21,6 +21,14 @@ const useStyles = makeStyles((theme) => ({
       width: "25ch",
     },
   },
+  questionContainer: {
+    backgroundColor: 'lightgray',
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  choiceContainer: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 function CreateQuiz() {
@@ -41,6 +49,7 @@ function CreateQuiz() {
   const [title, setTitle] = useState("");
 
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const handleAddQuestion = () => {
     const newQuestion = {
@@ -159,7 +168,7 @@ function CreateQuiz() {
           </FormControl>
           {quiz.map((question, index) => (
             <Box key={index + 1}>
-              <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+              <FormControl fullWidth sx={{ p: 2 }} variant="filled" className={classes.questionContainer}>
                 <TextField
                   id={index + 1}
                   label={"Question #" + (index + 1)}

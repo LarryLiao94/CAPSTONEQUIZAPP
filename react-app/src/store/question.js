@@ -5,6 +5,12 @@ const REMOVE_QUESTION = "question/REMOVE_QUESTION";
 const GET_ALL_QUESTIONS = "question/GET_ALL_QUESTIONS";
 const GET_QUESTION_BY_ID = "question/GET_QUESTION_BY_ID";
 const EDIT_QUESTION = "question/EDIT_QUESTION";
+const GET_PROFILE_QUESTION = "question/GET_PROFILE_QUESTION";
+
+const getProfileQuestion = (questions) => ({
+  type: GET_PROFILE_QUESTION,
+  questions
+})
 
 const getQuestionById = (question) => ({
   type: GET_QUESTION_BY_ID,
@@ -37,6 +43,15 @@ export const getQuestionByIdThunk = (id) => async (dispatch) => {
   const { question } = await res.json();
   if (res.ok) {
     dispatch(getQuestionById(question));
+  }
+  return res;
+};
+
+export const getProfileQuestionThunk = () => async (dispatch) => {
+  const res = await csrfFetch(`/api/profile/`);
+  const { questions } = await res.json();
+  if (res.ok) {
+    dispatch(getProfileQuestion(questions));
   }
   return res;
 };
@@ -106,6 +121,9 @@ const questionsReducer = (state = initialState, action) => {
     case EDIT_QUESTION:
       return { ...state, ...action.payload };
     case GET_ALL_QUESTIONS:
+        newState.questions = action.questions;
+        return newState;
+    case GET_PROFILE_QUESTION:
         newState.questions = action.questions;
         return newState;
     case REMOVE_QUESTION:

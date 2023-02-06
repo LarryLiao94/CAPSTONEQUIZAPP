@@ -67,7 +67,7 @@ function Dashboard() {
                     <Typography variant="subtitle1">{description}</Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                {/* <CardActions>
                   
                   <>
                   <IconButton
@@ -87,7 +87,7 @@ function Dashboard() {
                     <DeleteIcon />
                   </IconButton>
                   </>
-                </CardActions>
+                </CardActions> */}
                 
               </Card>
             </Grid>
