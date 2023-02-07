@@ -14,19 +14,33 @@ import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import { getAllQuizzesThunk, removeQuizThunk } from "../../store/quiz";
 import { editQuizThunk, getProfileQuizThunk } from "../../store/quiz";
-import { getProfileQuestionThunk, removeQuestionThunk } from "../../store/question";
+import {
+  getProfileQuestionThunk,
+  removeQuestionThunk,
+} from "../../store/question";
 import { csrfFetch } from "../../store/csrf";
+import { Pagination } from "@mui/material";
 import "./profile.css";
 
 function Profile() {
   const [loading, setLoading] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const questionsPerPage = 12;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const { quizzes } = useSelector((state) => state.quizzes);
   const { questions } = useSelector((state) => state.questions);
+
+  const questionsToShow = questions?.slice(
+    (currentPage - 1) * questionsPerPage,
+    currentPage * questionsPerPage
+  );
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   useEffect(() => {
     const profileQuiz = async () => {
@@ -104,7 +118,7 @@ function Profile() {
         spacing={5}
         sx={{ paddingTop: "50px" }}
       >
-        {questions?.map((question) => {
+        {questionsToShow?.map((question) => {
           const { id, question_text, description, user_id } = question;
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
@@ -120,7 +134,7 @@ function Profile() {
                     <IconButton
                       aria-label="edit"
                       className="edit-icon"
-                      onClick={() => history.push(`/quiz/edit/${id}`)}
+                      onClick={() => history.push(`/question/edit/${id}`)}
                     >
                       <EditIcon />
                     </IconButton>
@@ -140,6 +154,13 @@ function Profile() {
           );
         })}
       </Grid>
+      <Pagination
+        count={Math.ceil(questions?.length / questionsPerPage)}
+        page={currentPage}
+        color="primary"
+        onChange={handlePageChange}
+        style={{ justifyContent: "center"}}
+      />
     </Container>
   );
 }

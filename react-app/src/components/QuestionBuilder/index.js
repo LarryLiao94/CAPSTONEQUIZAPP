@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -10,8 +10,14 @@ import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import { addQuizThunk } from '../../store/quiz';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addQuestionThunk } from '../../store/question';
+import { useHistory } from 'react-router-dom';
+import { InputLabel, Select, MenuItem } from '@mui/material';
+import { getProfileQuizThunk } from '../../store/quiz';
+import { useSelect } from '@mui/base';
+import {Grid} from '@mui/material';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,65 +30,84 @@ const useStyles = makeStyles((theme) => ({
 
 function CreateQuestion() {
   const classes = useStyles();
-  const [quiz, setQuiz] = useState({ title: '', questions: [{ question_text: '', choices: [{ choice: '', is_correct: false }]}]} );
-  const [question, setQuestion] = useState({ question_text: '', choices: [{ choice: '', is_correct: false }] });
-  const [choice, setChoice] = useState({ choice: '', is_correct: false });
-  const [correctChoice, setCorrectChoice] = useState(-1);
-  const [errors, setErrors] = useState([]);
+  const [question_text, setQuestion_Text] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [category_id, setCategory_Id] = useState(null);
+  const [quiz_id, setQuiz_id] = useState(null);
+  const [question, setQuestion] = useState(
+    {
+      question_text: "",
+      category_id: null,
+      choices: [
+        { choice: "", is_correct: false },
+        { choice: "", is_correct: false },
+        { choice: "", is_correct: false },
+        { choice: "", is_correct: false },
+      ],
+      name: `name${1}`,
+    },
+  );
 
+  const history = useHistory();
   const dispatch = useDispatch();
+  const quizzes = useSelector((state) => state.quizzes.quizzes)
 
-  const handleQuizChange = (event) => {
-    setQuiz({ ...quiz, [event.target.name]: event.target.value });
+  const categories = useSelector((state) => state.categories.categories)
+
+  const handleQuestiontTextChange = (e) => setQuestion_Text(e.target.value);
+
+  const handleCategoryIdChange = (e) => setCategory_Id(e.target.value);
+
+  const handleQuizIdChange = (e) => setQuiz_id(e.target.value);
+
+
+
+  const handleCheckBox = (e, index) => {
+    const name = e.target.name;
+    const newQuestion = {...question};
+    newQuestion.choices.map((c, i) => {
+      if (index === i) {
+        c.is_correct = !c.is_correct;
+      } else {
+        c.is_correct = false;
+      }
+      return c;
+    });
+    setQuestion(newQuestion);
   };
 
-  const handleQuestionChange = (event) => {
-    console.log(event)
-    setQuestion({ ...question, [event.target.name]: event.target.value });
+  const handleChoiceChange = (e, index) => {
+    const value = e.target.value;
+    const newQuestion = {...question};
+    newQuestion.choices.map((c, i) => {
+      if (index === i) {
+        c.choice = value;
+      }
+      return c;
+    });
+    setQuestion(newQuestion);
   };
 
-  const handleChoiceChange = (event) => {
-    setChoice({ ...choice, [event.target.name]: event.target.value });
-  };
-
-  // const handleCorrectChange = (event) => {
-  //   setChoice({ ...choice, is_correct: event.target.checked });
-  // };
-  const handleCorrectChange = (event, index) => {
-    if (index === correctChoice) {
-      setCorrectChoice(-1);
-    } else {
-      setCorrectChoice(index);
-    }
-  }
-  
-  const handleAddQuestion = (event) => {
-    setQuiz({ ...quiz, questions: [...quiz.questions, question] });
-    setQuestion({ question_text: '', choices: [{ choice: '', is_correct: false }] });
-  };
-
-  const handleAddChoice = (event) => {
-    console.log(event)
-    setQuestion({ ...question, choices: [...question.choices, choice] });
-    setChoice({ choice: '', is_correct: false });
-  };
-
-  const handleSubmit = async (event, history) => {
-    
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      // send quiz data to server and dispatch addQuiz action
-      const newQuiz = await dispatch(addQuestionThunk(question));
-      // navigate to the new quiz's page
-      history.push(`/dashboard`);
-  } catch (res) {
-      // handle error
-      setErrors([]);
-      // const data = await res.json();
-      // if (data && data.errors) setErrors(data.errors);
-  }
-    console.log(quiz);
+    let questionItem = {}
+    if(quiz_id){
+      questionItem = {question_text, choices: question.choices, category_id, quiz_id}
+      await dispatch(addQuestionThunk({ question_text, category_id, quiz_id, choices: questionItem.choices }));
+    } else{
+      questionItem = {question_text, choices: question.choices, category_id}
+      await dispatch(addQuestionThunk({ question_text, category_id, choices: questionItem.choices }));
+    }
+    history.push(`/dashboard`);
+};
+
+useEffect(() => {
+  const profileQuiz = async () => {
+    const profileQuizzes = await dispatch(getProfileQuizThunk());
+    setLoading(false);
   };
+  profileQuiz();
+}, [dispatch]);
 
   return (
     <Container maxWidth="false" sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
@@ -102,35 +127,79 @@ function CreateQuestion() {
             <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <TextField
                   id={1}
-                  label="Question #1"
+                  label="Question Text"
                   name="questiontext"
-                  onChange={handleQuestionChange}
+                  value={question_text}
+                  onChange={handleQuestiontTextChange}
                   variant="standard"
                 />
               </FormControl>
-              {question.choices.map((c, i) => (
+              <Grid container spacing={2}>
+  <Grid item xs={6}>
+    <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+      <InputLabel id="category-select-label">Category</InputLabel>
+      <Select
+        labelId="category-select-label"
+        id="category-select"
+        value={category_id}
+        onChange={handleCategoryIdChange}
+      >
+        <MenuItem value="">
+          <em>Choose a category</em>
+        </MenuItem>
+        {Object.values(categories)?.map((category, index) => (
+          <MenuItem key={index} value={category.id} >
+            {category.title}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  </Grid>
+  <Grid item xs={6}>
+    <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+      <InputLabel id="quiz-select-label">Quiz</InputLabel>
+      <Select
+        labelId="quiz-select-label"
+        id="quiz-select"
+        value={quiz_id}
+        onChange={handleQuizIdChange}
+      >
+        <MenuItem value="">
+          <em>Choose a quiz</em>
+        </MenuItem>
+        {quizzes?.map((quiz, index) => (
+          <MenuItem key={index} value={quiz.id} >
+            {quiz.title}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  </Grid>
+</Grid>
+              {question?.choices.map((c, i) => (
                 <Box key={i + 1}>
                 <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                   <TextField
                     id={i + 1}
                     label={"Choice-" + (i + 1)}
                     name="choice"
-                    onChange={handleChoiceChange}
+                    onChange={(event) => handleChoiceChange(event, i)}
                     variant="standard"
+                    value={c.choice}
                   />
                 </FormControl>
                 <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                   <Typography>
                     Is Correct: 
                     <Checkbox
-                      checked={i === correctChoice}
-                      onChange={(event) => handleCorrectChange(event, i)}
+                      checked={c.is_correct}
+                      name={question.name}
+                      onChange={(event) => handleCheckBox(event, i)}
                     />
                   </Typography>
                 </FormControl>
               </Box>
               ))}
-              <Button sx={{ p: 2 }} endIcon={<AddIcon />} onClick={handleAddChoice}>Add Choice</Button>
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
             <Stack direction="row" spacing={2}>
               <Button size="large" variant="contained" onClick={handleSubmit} color="secondary">Submit</Button>

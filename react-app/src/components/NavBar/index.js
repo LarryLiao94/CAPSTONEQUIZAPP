@@ -69,6 +69,7 @@ export default function ButtonAppBar() {
   };
 
   const handleUserMenuClose = () => {
+    
     setUserAnchorEl(null);
   };
 
@@ -112,6 +113,8 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          {loggedSession ? (
+            <>
           <IconButton
             edge="start"
             color="inherit"
@@ -120,8 +123,6 @@ export default function ButtonAppBar() {
           >
             <HomeIcon onClick={() => history.push("/dashboard")} />
           </IconButton>
-          {loggedSession ? (
-            <>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Hello, {loggedSession.username}
               </Typography>
@@ -167,7 +168,7 @@ export default function ButtonAppBar() {
                   open={Boolean(categoriesAnchorEl)}
                   onClose={handleCategoriesMenuClose}
                 >
-                  {Object.values(menuCategories).map((category) => (
+                  {Object.values(menuCategories)?.map((category) => (
                     <MenuItem
                       key={category.id}
                       onClick={() => handleCategoryClick(category.id)}
@@ -192,37 +193,12 @@ export default function ButtonAppBar() {
                   // onOpen={() => alert('helo')}
                   onClose={handleUserMenuClose}
                 >
-                  <MenuItem component={Link} to={`/profile`}>
+                  <MenuItem component={Link} to={`/profile`} onClick={handleUserMenuClose}>
                     Profile
                   </MenuItem>
                   <MenuItem onClick={LogoutButton}>Logout</MenuItem>
                 </Menu>
               </div>
-              {/* <IconButton
-                aria-controls="categories-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="categories-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                  Categories
-                {Object.values(menuCategories).map((category) => (
-                  <MenuItem
-                    key={category.id}
-                    onClick={() => handleCategoryClick(category.id)}
-                  >
-                    {category.title}
-                  </MenuItem>
-                ))}
-              </Menu>
-              <LogoutButton onClick={() => setIsLoggedIn(false)} /> */}
             </>
           ) : (
             <>

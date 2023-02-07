@@ -81,6 +81,7 @@ export const getAllQuestionsThunk = () => async (dispatch) => {
   };
   
   export const addQuestionThunk = (question) => async (dispatch) => {
+    console.log('GOT HERE !!!!', question)
     const response = await csrfFetch(`/api/questions/`, {
       method: "POST",
       headers: {
@@ -89,6 +90,7 @@ export const getAllQuestionsThunk = () => async (dispatch) => {
       body: JSON.stringify(question),
     });
     if (response.ok) {
+      console.log("QUESTIONQUESTIONQUESTION", response)
       const newQuestion = await response.json();
       dispatch(addQuestion(newQuestion));
     }

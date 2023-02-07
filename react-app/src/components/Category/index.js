@@ -49,6 +49,10 @@ function Category() {
 
   console.log(categoryDetails, 'JOASIFJAW;OEIF')
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Box>
       <Typography variant="h2" align="center">

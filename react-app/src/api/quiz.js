@@ -7,3 +7,11 @@ export const getQuiz = async (id) => {
 
     return quizData;
   };
+
+  export const getQuestion = async (id) => {
+    const res = await csrfFetch(`/api/questions/${Number(id)}`);
+
+    const questionData = await res.json();
+
+    return questionData;
+  };

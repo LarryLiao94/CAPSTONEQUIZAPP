@@ -20,6 +20,7 @@ import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/
 import makeStyles from '@mui/styles/makeStyles';
 import EditQuiz from "./components/EditQuiz";
 import Profile from "./components/Profile";
+import EditQuestion from "./components/EditQuestion";
 
 const theme = createTheme();
 
@@ -82,6 +83,9 @@ function App() {
           </Route>
           <Route path="/questions/new">
             <QuestionBuilder />
+          </Route>
+          <Route path="/question/edit/:id" exact={true}>
+            <EditQuestion />
           </Route>
           <Route path="/profile">
             <Profile />
