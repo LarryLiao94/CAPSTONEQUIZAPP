@@ -195,7 +195,7 @@ function CreateQuiz() {
   // }, [quiz]);
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
+    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset" }}>
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2" component="h3">

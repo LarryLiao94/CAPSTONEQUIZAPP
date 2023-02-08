@@ -45,7 +45,7 @@ function SingleQuestion() {
     console.log("Form submitted");
     let getCorrectAnswers = 0;
 
-    const getCorrectChoices = singularQuestion.choices.map((choice) => {
+    const getCorrectChoices = singularQuestion?.choices.map((choice) => {
         if (
           choice.id === selectedAnswers[choice.question_id] &&
           choice.is_correct

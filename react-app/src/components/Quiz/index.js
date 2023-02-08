@@ -149,6 +149,7 @@ function Quiz() {
         ))}
         <FormControl fullWidth sx={{ p: 2 }} variant="filled">
           <Stack direction="row" spacing={2}>
+            {!submitted && (
             <Button
               size="large"
               variant="contained"
@@ -157,6 +158,8 @@ function Quiz() {
             >
               Submit
             </Button>
+
+            )}
 
             {submitted && (
               <Button
