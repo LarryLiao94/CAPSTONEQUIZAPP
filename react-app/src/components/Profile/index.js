@@ -9,7 +9,6 @@ import { CardActionArea } from "@mui/material";
 import { CardActions } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import { getAllQuizzesThunk, removeQuizThunk } from "../../store/quiz";
@@ -123,7 +122,7 @@ function Profile() {
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
               <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
-                <CardActionArea onClick={() => history.push(`/question/${id}`)}>
+                <CardActionArea onClick={() => history.push(`/question/edit/${id}`)}>
                   <CardContent>
                     <Typography variant="h5">{question_text}</Typography>
                     <Typography variant="subtitle1">{description}</Typography>
@@ -155,6 +154,7 @@ function Profile() {
         })}
       </Grid>
       <Pagination
+        sx={{justifyContent: "center", marginTop: "50px"}}
         count={Math.ceil(questions?.length / questionsPerPage)}
         page={currentPage}
         color="primary"

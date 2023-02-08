@@ -2,12 +2,31 @@
   background-color: #0d6efd;
   height: 100vh;
 }
-.headings {
+.left_headings {
   width: 100%;
   color: white;
   margin: auto;
   margin-left: 10em;
   padding-top: 15em;
+}
+.right {
+  align-items: right;
+}
+.right_headings{
+  width: 100%;
+  color: #0d6efd;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+}
+
+.right_headings h1 {
+  order: 1;
+}
+
+.right_headings h2 {
+  order: 2;
 }
 .App {
   background-color: white;
@@ -26,7 +45,6 @@
   text-decoration: none;
   text-align: center;
   color: white;
-  margin-left: 250px;
   padding-top: 10px;
   margin-top: 20px;
 }

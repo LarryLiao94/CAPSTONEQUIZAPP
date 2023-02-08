@@ -166,7 +166,7 @@ const EditQuestion = () => {
               </FormControl>
             </Grid>
           </Grid>
-          {questions?.choices.map((c, i) => (
+          {questions?.choices?.map((c, i) => (
             <Box key={i + 1}>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <TextField

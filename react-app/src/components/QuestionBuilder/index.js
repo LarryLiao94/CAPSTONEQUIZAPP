@@ -4,18 +4,15 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Checkbox from "@mui/material/Checkbox";
-import { addQuizThunk } from "../../store/quiz";
 import { useDispatch, useSelector } from "react-redux";
 import { addQuestionThunk } from "../../store/question";
 import { useHistory } from "react-router-dom";
 import { InputLabel, Select, MenuItem } from "@mui/material";
 import { getProfileQuizThunk } from "../../store/quiz";
-import { useSelect } from "@mui/base";
 import { Grid } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 
@@ -186,6 +183,7 @@ function CreateQuestion() {
               variant="standard"
               error={!!error.question_text}
               helperText={error.question_text}
+              inputProps={{ maxLength: 255 }}
             />
           </FormControl>
           <Grid container spacing={2}>

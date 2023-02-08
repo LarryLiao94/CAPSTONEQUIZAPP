@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -195,7 +195,7 @@ function CreateQuiz() {
   // }, [quiz]);
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset" }}>
+    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}>
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2" component="h3">

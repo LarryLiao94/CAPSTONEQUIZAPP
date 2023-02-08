@@ -9,11 +9,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Stack from "@mui/material/Stack";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { getQuizByIdThunk, updateQuizSubmit } from "../../store/quiz";
 import { useSelector, useDispatch } from "react-redux";
-import { Snackbar, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import "./SingleQuestion.css";
 import { getQuestionByIdThunk, updateQuestionSubmit } from "../../store/question";
 // import { getQuestion } from "../../api/quiz";
@@ -113,14 +109,14 @@ function SingleQuestion() {
           >
             <FormControl fullWidth sx={{ p: 2 }} variant="filled">
               <Typography variant="h4">
-                {`${singularQuestion.question_text}`}
+                {`${singularQuestion?.question_text}`}
               </Typography>
               <RadioGroup
-                name={`question-${singularQuestion.id}`}
+                name={`question-${singularQuestion?.id}`}
                 sx={{ paddingTop: "20px" }}
                 required
               >
-                {singularQuestion?.choices.map((c) => {
+                {singularQuestion?.choices?.map((c) => {
                   const { id, choice, getClass, selected } = c;
                   return (
                     <FormControlLabel
