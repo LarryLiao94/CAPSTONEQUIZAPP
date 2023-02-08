@@ -123,7 +123,7 @@ function Profile() {
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
               <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
-                <CardActionArea onClick={() => history.push(`/quiz/${id}`)}>
+                <CardActionArea onClick={() => history.push(`/question/${id}`)}>
                   <CardContent>
                     <Typography variant="h5">{question_text}</Typography>
                     <Typography variant="subtitle1">{description}</Typography>
@@ -159,7 +159,7 @@ function Profile() {
         page={currentPage}
         color="primary"
         onChange={handlePageChange}
-        style={{ justifyContent: "center"}}
+        className="pagination-class"
       />
     </Container>
   );

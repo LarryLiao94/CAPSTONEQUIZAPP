@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   questionContainer: {
-    backgroundColor: 'lightgray',
+    backgroundColor: "lightgray",
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
@@ -47,6 +47,12 @@ function CreateQuiz() {
   ]);
 
   const [title, setTitle] = useState("");
+  const [titleValid, setTitleValid] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [choiceError, setChoiceError] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const [showCheckBoxError, setShowCheckBoxError] = useState(false);
 
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -78,6 +84,37 @@ function CreateQuiz() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormSubmitted(true);
+    let questionTextEmpty = false;
+    let choiceEmpty = false;
+    let checkboxChecked = false;
+    quiz.forEach((q) => {
+      if (q.question_text === "") {
+        questionTextEmpty = true;
+      }
+
+      q.choices.forEach((c) => {
+        if (c.choice === "") {
+          choiceEmpty = true;
+        }
+
+        if (!c.is_correct) {
+          checkboxChecked = true;
+          setShowCheckBoxError(true);
+        }
+      });
+    });
+
+    if (!titleValid) {
+      return;
+    } else if (questionTextEmpty) {
+      return;
+    } else if (choiceEmpty) {
+      return;
+    } else if (!checkboxChecked) {
+      return;
+    }
+
     const quizItem = { title, questions: quiz };
     console.log("quizItem!!!", quizItem);
     await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
@@ -85,7 +122,10 @@ function CreateQuiz() {
     console.log(quiz);
   };
 
-  const handleTitleChange = (e) => setTitle(e.target.value);
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+    setTitleValid(e.target.value !== "");
+  };
 
   const handleCheckBox = (e, index) => {
     const name = e.target.name;
@@ -103,25 +143,38 @@ function CreateQuiz() {
       return q;
     });
 
+    const isCorrectChoice = newQuiz.find((q) =>
+      q.choices.some((c) => c.is_correct)
+    );
+    if (!isCorrectChoice) {
+      setErrors({ ...errors, [name]: "One choice must be marked as correct." });
+    } else {
+      setErrors({ ...errors, [name]: "" });
+    }
+
     setQuiz(newQuiz);
   };
 
   const handleChoiceChange = (e, index) => {
     const value = e.target.value;
     const name = e.target.name;
-    const newQuiz = quiz.map((q) => {
-      if (q.name === name) {
-        q.choices.map((c, i) => {
-          if (index === i) {
-            c.choice = value;
-          }
-          return c;
-        });
-      }
-      return q;
-    });
-
-    setQuiz(newQuiz);
+    if (!value) {
+      setChoiceError({ ...choiceError, [index]: "This field is required" });
+    } else {
+      setChoiceError({ ...choiceError, [index]: "" });
+      const newQuiz = quiz.map((q) => {
+        if (q.name === name) {
+          q.choices.map((c, i) => {
+            if (index === i) {
+              c.choice = value;
+            }
+            return c;
+          });
+        }
+        return q;
+      });
+      setQuiz(newQuiz);
+    }
   };
 
   const handleQuestiontTextChange = (e) => {
@@ -164,11 +217,20 @@ function CreateQuiz() {
               value={title}
               variant="standard"
               onChange={handleTitleChange}
+              error={formSubmitted && !titleValid}
+              helperText={
+                formSubmitted && !titleValid ? "Please enter a title" : ""
+              }
             />
           </FormControl>
           {quiz.map((question, index) => (
             <Box key={index + 1}>
-              <FormControl fullWidth sx={{ p: 2 }} variant="filled" className={classes.questionContainer}>
+              <FormControl
+                fullWidth
+                sx={{ p: 2 }}
+                variant="filled"
+                className={classes.questionContainer}
+              >
                 <TextField
                   id={index + 1}
                   label={"Question #" + (index + 1)}
@@ -176,6 +238,12 @@ function CreateQuiz() {
                   variant="standard"
                   value={question.question_text}
                   onChange={(e) => handleQuestiontTextChange(e)}
+                  error={formSubmitted && question.question_text === ""}
+                  helperText={
+                    formSubmitted && question.question_text === ""
+                      ? "Please enter a question"
+                      : ""
+                  }
                 />
               </FormControl>
               {question.choices.map((c, i) => (
@@ -188,6 +256,12 @@ function CreateQuiz() {
                       variant="standard"
                       value={c.choice}
                       onChange={(event) => handleChoiceChange(event, i)}
+                      error={formSubmitted && c.choice === ""}
+                      helperText={
+                        formSubmitted && c.choice === ""
+                          ? "Please enter a choice"
+                          : ""
+                      }
                     />
                   </FormControl>
                   <FormControl fullWidth sx={{ p: 2 }} variant="filled">
@@ -232,6 +306,14 @@ function CreateQuiz() {
               >
                 Submit
               </Button>
+
+              {showCheckBoxError && (
+                <div className="checkbox-error">
+                  <small className="text-danger">
+                    Please select a checkbox!
+                  </small>
+                </div>
+              )}
             </Stack>
           </FormControl>
         </Box>

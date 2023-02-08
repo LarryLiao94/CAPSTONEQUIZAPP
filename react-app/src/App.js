@@ -14,6 +14,7 @@ import QuizBuilder from "./components/QuizBuilder";
 import LandingPage from "./components/LandingPage";
 import Category from "./components/Category";
 import QuestionBuilder from "./components/QuestionBuilder";
+import SingleQuestion from "./components/SingleQuestion";
 import "./App.css";
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
@@ -81,7 +82,10 @@ function App() {
           <Route exact path="/quiz">
             <QuizBuilder />
           </Route>
-          <Route path="/questions/new">
+          <Route path="/question/:id" exact>
+            <SingleQuestion />
+          </Route>
+          <Route path="/questions/new" exact>
             <QuestionBuilder />
           </Route>
           <Route path="/question/edit/:id" exact={true}>

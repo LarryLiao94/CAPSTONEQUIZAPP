@@ -47,8 +47,8 @@ def update_question(id):
         # if form.category_id.data:
         #     question.category_id = form.category_id.data
         question.question_text = form.question_text.data
-        category_id = form.category_id.data,
-        quiz_id = form.quiz_id.data,
+        question.category_id = form.category_id.data
+        question.quiz_id = form.quiz_id.data
         db.session.commit()
         return jsonify({'question': question.to_dict()}), 201
     else:

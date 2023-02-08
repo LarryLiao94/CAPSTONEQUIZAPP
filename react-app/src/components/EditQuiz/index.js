@@ -50,7 +50,7 @@ function EditQuiz() {
     await dispatch(editQuizThunk(id, { title: quiz.title }));
     quiz.questions.forEach(async (q) => {
       await dispatch(
-        editQuestionThunk(q.id, { question_text: q.question_text })
+        editQuestionThunk(q.id, { question_text: q.question_text, category_id: 1, quiz_id: quiz.id })
       );
       q.choices.forEach(async (c) => {
         await dispatch(editChoiceThunk(c.id, { choice: c.choice }));

@@ -29,7 +29,9 @@ const LoginForm = () => {
     if (data) {
       setErrors(data);
     }
-    history.push("/dashboard");
+    if(user){
+      history.push("/dashboard");
+    }
   };
 
   const updateEmail = (e) => {

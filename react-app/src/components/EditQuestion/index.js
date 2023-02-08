@@ -51,11 +51,12 @@ const EditQuestion = () => {
     let questionItem = {};
     if(questions.quiz_id){
         questionItem = {question_text, choices: questions.choices, category_id: questions.category_id, quiz_id: questions.quiz_id}
-        // await dispatch(editQuestionThunk(id, {question_text, category_id: Number(questions.category_id), quiz_id: Number(questions.quiz_id)}))
+        await dispatch(editQuestionThunk(id, {question_text, category_id: Number(questions.category_id), quiz_id: Number(questions.quiz_id)}))
+        history.push("/profile")
     } else {
         questionItem = {question_text, choices: questions.choices, category_id: questions.category_id}
-        await dispatch(editQuestionThunk(Number(id), {question_text}))
-
+        await dispatch(editQuestionThunk(Number(id), {question_text, category_id: questions.category_id}))
+        history.push("/profile")
     }
     console.log("questionItem!!!", questionItem);
     console.log("typeof", typeof(questions.category_id))
@@ -132,7 +133,7 @@ const EditQuestion = () => {
                   defaultValue={questions?.category_id}
                   onChange={handleChange}
                 >
-                  <MenuItem value="">
+                  <MenuItem defaultValue={questions?.category_id}>
                     <em>Choose a category</em>
                   </MenuItem>
                   {Object.values(categories)?.map((category, index) => (

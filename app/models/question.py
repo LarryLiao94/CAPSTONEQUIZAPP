@@ -13,7 +13,7 @@ class Question(db.Model):
     question_text = db.Column(db.String(255), nullable=False)
 
     choices = db.relationship('Choice', primaryjoin="(Question.id==Choice.question_id)", backref='questions', lazy=True, cascade="all, delete, delete-orphan")
-    user_questions = db.relationship('User_Question', primaryjoin="(Question.id==User_Question.question_id)", backref='questions', lazy=True)
+    user_questions = db.relationship('User_Question', primaryjoin="(Question.id==User_Question.question_id)", backref='questions', lazy=True, cascade="all, delete, delete-orphan")
     
 
 

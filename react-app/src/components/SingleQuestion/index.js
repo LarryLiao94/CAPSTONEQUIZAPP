@@ -14,39 +14,38 @@ import { getQuizByIdThunk, updateQuizSubmit } from "../../store/quiz";
 import { useSelector, useDispatch } from "react-redux";
 import { Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./Quiz.css";
+import "./SingleQuestion.css";
+import { getQuestionByIdThunk, updateQuestionSubmit } from "../../store/question";
+// import { getQuestion } from "../../api/quiz";
 
-function Quiz() {
+function SingleQuestion() {
   const [loading, setLoading] = useState(true);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [open, setOpen] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [correctChoices, setCorrectChoices] = useState([]);
   const [submitted, setSubmitted] = useState(false);
-
+  
   const { id } = useParams();
   const dispatch = useDispatch();
-  const quizzes = useSelector((state) => state.quizzes);
+
+  const singularQuestion = useSelector((state) => state.questions)
 
   useEffect(() => {
-    const getQuiz = async () => {
-      await dispatch(getQuizByIdThunk(id));
+    const getQuestion = async () => {
+      await dispatch(getQuestionByIdThunk(id));
+      
     };
-    getQuiz();
+    getQuestion();
     setLoading(false);
   }, [id, dispatch]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   const handleSubmit = () => {
     // Handle form submission here
     console.log("Form submitted");
     let getCorrectAnswers = 0;
 
-    const getCorrectChoices = quizzes.questions.map((q) => {
-      q.choices.map((choice) => {
+    const getCorrectChoices = singularQuestion.choices.map((choice) => {
         if (
           choice.id === selectedAnswers[choice.question_id] &&
           choice.is_correct
@@ -70,21 +69,21 @@ function Quiz() {
         return choice;
       });
 
-      return q;
-    });
-
-    let getQuizzes = quizzes;
-    getQuizzes.questions = getCorrectChoices;
-
-    dispatch(updateQuizSubmit(getQuizzes));
-    setCorrectChoices(getCorrectChoices);
-    setCorrectAnswers(getCorrectAnswers);
-    setSubmitted(true);
-    setOpen(true);
+      
+      
+      let getQuestions = singularQuestion;
+      singularQuestion.choices = getCorrectChoices;
+      
+      dispatch(updateQuestionSubmit(getQuestions));
+      setCorrectChoices(getCorrectChoices);
+      setCorrectAnswers(getCorrectAnswers);
+      setSubmitted(true);
+      setOpen(true);
+      return singularQuestion;
   };
 
   const handleRetake = async () => {
-    await dispatch(getQuizByIdThunk(id));
+    await dispatch(getQuestionByIdThunk(id));
     setSelectedAnswers({});
     setCorrectAnswers(0);
     setCorrectChoices([]);
@@ -92,19 +91,19 @@ function Quiz() {
     setOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
-      <Stack spacing={10} justifyContent="center" alignItems="center">
-        <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
-          <Typography variant="h2">{quizzes?.title}</Typography>
-        </Box>
-        {quizzes?.questions?.map((question, index) => (
+    <>
+      <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
+        <Stack spacing={10} justifyContent="center" alignItems="center">
+          <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
+            <Typography variant="h2">{`Question ${singularQuestion?.id}`}</Typography>
+          </Box>
           <Box
-            key={question.id}
+            key={singularQuestion?.id}
             mb={3}
             sx={{
               width: "60%",
@@ -114,14 +113,14 @@ function Quiz() {
           >
             <FormControl fullWidth sx={{ p: 2 }} variant="filled">
               <Typography variant="h4">
-                {`Question ${index + 1}: ${question.question_text}`}
+                {`${singularQuestion.question_text}`}
               </Typography>
               <RadioGroup
-                name={`question-${question.id}`}
+                name={`question-${singularQuestion.id}`}
                 sx={{ paddingTop: "20px" }}
                 required
               >
-                {question.choices.map((c) => {
+                {singularQuestion?.choices.map((c) => {
                   const { id, choice, getClass, selected } = c;
                   return (
                     <FormControlLabel
@@ -130,11 +129,11 @@ function Quiz() {
                       className={`answer ${getClass}`}
                       control={
                         <Radio
-                          checked={selectedAnswers[question.id] === id}
+                          checked={selectedAnswers[singularQuestion.id] === id}
                           onChange={() =>
                             setSelectedAnswers({
                               ...selectedAnswers,
-                              [question.id]: id,
+                              [singularQuestion.id]: id,
                             })
                           }
                         />
@@ -146,8 +145,7 @@ function Quiz() {
               </RadioGroup>
             </FormControl>
           </Box>
-        ))}
-        <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+          <FormControl fullWidth sx={{ p: 2 }} variant="filled">
           <Stack direction="row" spacing={2}>
             <Button
               size="large"
@@ -170,25 +168,10 @@ function Quiz() {
             )}
           </Stack>
         </FormControl>
-      </Stack>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        open={open}
-        onClose={handleClose}
-        message={`You got ${correctAnswers} out of ${quizzes?.questions?.length} correct`}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
-    </Container>
+        </Stack>
+      </Container>
+    </>
   );
 }
 
-export default Quiz;
+export default SingleQuestion;
