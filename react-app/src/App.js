@@ -17,7 +17,7 @@ import QuestionBuilder from "./components/QuestionBuilder";
 import SingleQuestion from "./components/SingleQuestion";
 import "./App.css";
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
-
+import { useSelector } from "react-redux";
 import makeStyles from '@mui/styles/makeStyles';
 import EditQuiz from "./components/EditQuiz";
 import Profile from "./components/Profile";
@@ -35,6 +35,8 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state) => state.session)
+
   useEffect(() => {
     (async () => {
       await dispatch(authenticate());
@@ -50,7 +52,11 @@ function App() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
       <BrowserRouter>
+
+      {user && (
         <NavBar />
+
+      )}
         <Switch>
           <Route path="/login" exact={true}>
             <LoginForm />
