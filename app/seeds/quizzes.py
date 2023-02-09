@@ -2,9 +2,20 @@ from app.models import db, Quiz, environment, SCHEMA
 
 # Adds demo questions to the questions table
 def seed_quizzes():
-    quiz1 = Quiz(user_id=1, title="test quiz 1")
-    quiz2 = Quiz(user_id=1, title="test quiz 2")
-    quiz3 = Quiz(user_id=1, title="QUIZGANG")
+    quiz1 = Quiz(user_id=1, title="Demo Math Quiz")
+    quiz2 = Quiz(user_id=1, title="Demo Science Quiz")
+    quiz3 = Quiz(user_id=1, title="Demo Music Quiz")
+    quiz4 = Quiz(user_id=1, title="Demo Movie Quiz")
+    quiz5 = Quiz(user_id=2, title="Random Quiz")
+    quiz6 = Quiz(user_id=2, title="Harry Potter Quiz")
+    quiz7 = Quiz(user_id=2, title="Vocab Quiz")
+    quiz8 = Quiz(user_id=2, title="Geography Quiz")
+    quiz9 = Quiz(user_id=1, title="Challenge Math")
+    quiz10 = Quiz(user_id=1, title="You won't get these")
+    quiz11 = Quiz(user_id=1, title="Riddles")
+    quiz12 = Quiz(user_id=1, title="Are you smarter than a 5th grader?")
+    quiz13 = Quiz(user_id=1, title="Questions of life")
+    quiz14 = Quiz(user_id=1, title="Impossible Questions")
     # question1 = Question(user_id=1, category_id=1, quiz_id=2, question_text="test question 3")
     # question1 = Question(user_id=1, category_id=2, quiz_id=2, question_text="test question 4")
 
@@ -12,6 +23,17 @@ def seed_quizzes():
     db.session.add(quiz1)
     db.session.add(quiz2)
     db.session.add(quiz3)
+    db.session.add(quiz4)
+    db.session.add(quiz5)
+    db.session.add(quiz6)
+    db.session.add(quiz7)
+    db.session.add(quiz8)
+    db.session.add(quiz9)
+    db.session.add(quiz10)
+    db.session.add(quiz11)
+    db.session.add(quiz12)
+    db.session.add(quiz13)
+    db.session.add(quiz14)
     db.session.commit()
 
 # Uses a raw SQL query to TRUNCATE or DELETE the users table. SQLAlchemy doesn't
