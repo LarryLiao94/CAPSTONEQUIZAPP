@@ -102,7 +102,16 @@ export default function ButtonAppBar() {
   };
 
   if (loading) {
-    return null;
+    return <div style={{
+      fontSize: "30px",
+      textAlign: "center",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)"
+    }}>
+      Loading...
+    </div>;
   }
 
   console.log({BOOLEANCHANGE: Boolean(userAnchorEl)})

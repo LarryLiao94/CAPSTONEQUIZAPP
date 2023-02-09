@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { signUp } from "../../store/session";
+import { useHistory } from "react-router-dom";
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
@@ -11,19 +12,19 @@ const SignUpForm = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
-
+  const history = useHistory();
 
   const onSignUp = async (e) => {
     e.preventDefault();
     if (password === repeatPassword) {
       try {
         await dispatch(signUp(username, email, password));
-        
       } catch (e) {
         setErrors(e.errors || [e.message]);
+        console.log(errors.email);
       }
-    } else{
-      setErrors(['Password does not match']);
+    } else {
+      setErrors(["Password does not match"]);
     }
   };
 
@@ -76,6 +77,7 @@ const SignUpForm = () => {
               onChange={updateEmail}
               required
             />
+            
           </div>
           <div className="form-group mt-3">
             <label htmlFor="password">Password</label>
@@ -119,7 +121,21 @@ const SignUpForm = () => {
             </button>
           </div>
           <div className="text-center mt-2">
-            <small>Already have an account? <a href="/login">Sign in here!</a></small>
+            <small>
+              Already have an account?{" "}
+              <button
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "blue",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => history.push("/login")}
+              >
+                Sign in Here!
+              </button>
+            </small>
           </div>
         </div>
       </form>

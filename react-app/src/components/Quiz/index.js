@@ -16,6 +16,14 @@ import { Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Quiz.css";
 
+const shuffle = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 function Quiz() {
   const [loading, setLoading] = useState(true);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -37,7 +45,16 @@ function Quiz() {
   }, [id, dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={{
+      fontSize: "30px",
+      textAlign: "center",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)"
+    }}>
+      Loading...
+    </div>
   }
 
   const handleSubmit = () => {
@@ -90,6 +107,12 @@ function Quiz() {
     setCorrectChoices([]);
     setSubmitted(false);
     setOpen(false);
+
+    // let quiz = quizzes;
+    // quiz.questions.forEach((question) => {
+    //   question.choices = shuffle(question.choices);
+    // });
+    // dispatch(updateQuizSubmit(quiz));
   };
 
   const handleClose = () => {
@@ -97,7 +120,7 @@ function Quiz() {
   };
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
+    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}>
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2">{quizzes?.title}</Typography>
@@ -150,15 +173,14 @@ function Quiz() {
         <FormControl fullWidth sx={{ p: 2 }} variant="filled">
           <Stack direction="row" spacing={2}>
             {!submitted && (
-            <Button
-              size="large"
-              variant="contained"
-              onClick={handleSubmit}
-              color="secondary"
-            >
-              Submit
-            </Button>
-
+              <Button
+                size="large"
+                variant="contained"
+                onClick={handleSubmit}
+                color="secondary"
+              >
+                Submit
+              </Button>
             )}
 
             {submitted && (

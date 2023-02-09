@@ -129,7 +129,16 @@ function EditQuiz() {
   }, [quiz]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={{
+      fontSize: "30px",
+      textAlign: "center",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)"
+    }}>
+      Loading...
+    </div>
   }
 
   const { questions, title } = quiz;

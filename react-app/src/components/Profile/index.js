@@ -58,7 +58,16 @@ function Profile() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading Quiz...</div>;
+    return <div style={{
+      fontSize: "30px",
+      textAlign: "center",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)"
+    }}>
+      Loading...
+    </div>
   }
 
   return (

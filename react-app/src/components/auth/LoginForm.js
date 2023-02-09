@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {  useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { login } from "../../store/session";
 
 const LoginForm = () => {
@@ -10,7 +10,6 @@ const LoginForm = () => {
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
   const history = useHistory();
-
 
   const handleGuestLogin = async (e) => {
     e.preventDefault();
@@ -25,13 +24,14 @@ const LoginForm = () => {
     if (!email || !password) {
       setErrors(["Email and password are required."]);
       return;
-  }
+    }
     if (data) {
       setErrors(data);
     }
-    if(user){
+    if (user) {
       history.push("/dashboard");
     }
+    history.push("/dashboard");
   };
 
   const updateEmail = (e) => {
@@ -80,17 +80,35 @@ const LoginForm = () => {
               {error}
             </div>
           ))}
-  
+
           <div className="d-grid gap-2 mt-3">
             <button type="submit" className="btn btn-primary">
               Submit
             </button>
-            <button type="button" className="btn btn-primary" onClick={handleGuestLogin}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleGuestLogin}
+            >
               Demo Login
             </button>
           </div>
           <div className="text-center mt-2">
-            <small>Don't have an account? <a href="/sign-up">Create one here!</a></small>
+            <small>
+              Don't have an account?{" "}
+              <button
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "blue",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => history.push("/sign-up")}
+              >
+                Create one here!
+              </button>
+            </small>
           </div>
         </div>
       </form>

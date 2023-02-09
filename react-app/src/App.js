@@ -82,9 +82,9 @@ function App() {
           <Route exact path="/quiz">
             <QuizBuilder />
           </Route>
-          <Route path="/question/:id" exact>
+          {/* <Route path="/question/:id" exact>
             <SingleQuestion />
-          </Route>
+          </Route> */}
           <Route path="/questions/new" exact>
             <QuestionBuilder />
           </Route>
