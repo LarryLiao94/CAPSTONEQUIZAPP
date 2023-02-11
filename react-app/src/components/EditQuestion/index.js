@@ -22,7 +22,7 @@ import { getQuestion } from "../../api/quiz";
 import { getProfileQuizThunk } from "../../store/quiz";
 import { getProfileQuestionThunk } from "../../store/question";
 import { Grid, InputLabel, Select, MenuItem } from "@mui/material";
-import {FormHelperText} from "@mui/material";
+import { FormHelperText } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,14 +40,22 @@ const EditQuestion = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [questionTextValid, setQuestionTextValid] = useState(false);
   const [questionDetails, setQuestionDetails] = useState(null);
-  
+  const [quizzes, setQuizzes] = useState([{ title: "You have no quizzes" }]);
+  const [error, setError] = useState({});
+const [showChoiceError, setShowChoiceError] = useState(false);
+const [showCheckBoxError, setShowCheckBoxError] = useState(false);
+
   const allProfileQuestions = useSelector((state) => state.questions.questions);
-  const quizzes = useSelector((state) => state.quizzes.quizzes);
+  const allProfileQuizzes = useSelector((state) => state.quizzes.quizzes);
   const categories = useSelector((state) => state.categories);
 
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const isCorrectAnswerSelected = (choices) => {
+    return choices.some((c) => c.is_correct === true);
+  };
 
   useEffect(() => {
     if (allProfileQuestions && Object.keys(allProfileQuestions).length && id) {
@@ -65,7 +73,6 @@ const EditQuestion = () => {
     }
   }, [dispatch, allProfileQuestions]);
 
-
   useEffect(() => {
     if (Object.keys(categories).length) {
       setAllCategories(categories[id]);
@@ -79,18 +86,24 @@ const EditQuestion = () => {
     event.preventDefault();
     setFormSubmitted(true);
     let choiceEmpty = false;
+    let checkboxChecked = false;
     if (questionDetails && questionDetails.choices) {
       questionDetails.choices.forEach((c) => {
         if (c.choice === "") {
           choiceEmpty = true;
         }
       });
+      if(isCorrectAnswerSelected(questionDetails.choices)) {
+        checkboxChecked = true;
+      }
     }
     if (!questionDetails.question_text) {
       return;
-    } else if(choiceEmpty) {
+    } else if (choiceEmpty) {
       return;
-    } else if(!questionDetails.category_id){
+    } else if (!questionDetails.category_id) {
+      return;
+    } else if (!checkboxChecked) {
       return;
     }
     let questionItem = {};
@@ -138,8 +151,7 @@ const EditQuestion = () => {
       }
       return c;
     });
-    
-  
+
     setQuestionDetails(newQuestion);
   };
 
@@ -147,25 +159,28 @@ const EditQuestion = () => {
     const newQuestion = { ...questionDetails };
     newQuestion.choices.map((c, i) => {
       if (c.id === itemID) {
-        c.is_correct = event.target.checked;
+        c.is_correct = !c.is_correct;
+      } else {
+        c.is_correct = false;
       }
       return c;
     });
-  
+
     setQuestionDetails(newQuestion);
   };
 
   useEffect(() => {
-    if (!quizzes || !quizzes.length) {
-      const profileQuiz = async () => {
-        const profileQuizzes = await dispatch(getProfileQuizThunk());
-        setLoading(false);
-      };
-      profileQuiz();
-    } else {
+    const profileQuiz = async () => {
+      const profileQuizzes = await dispatch(getProfileQuizThunk());
+      if (!profileQuizzes || !profileQuizzes.length) {
+        setQuizzes([{ title: "You have no quizzes" }]);
+      } else {
+        setQuizzes(profileQuizzes);
+      }
       setLoading(false);
-    }
-  }, [dispatch, quizzes]);
+    };
+    profileQuiz();
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -237,9 +252,7 @@ const EditQuestion = () => {
                   ))}
                 </Select>
                 {formSubmitted && !questionDetails.category_id && (
-                  <FormHelperText error>
-                    Category must be chosen
-                  </FormHelperText>
+                  <FormHelperText error>Category must be chosen</FormHelperText>
                 )}
               </FormControl>
             </Grid>
@@ -256,11 +269,15 @@ const EditQuestion = () => {
                   <MenuItem value="">
                     <em>Choose a quiz</em>
                   </MenuItem>
-                  {quizzes?.map((quiz, index) => (
-                    <MenuItem key={index} value={quiz.id}>
-                      {quiz.title}
-                    </MenuItem>
-                  ))}
+                  {allProfileQuizzes && allProfileQuizzes.length ? (
+                    allProfileQuizzes.map((quiz, index) => (
+                      <MenuItem key={index} value={quiz.id}>
+                        {quiz.title}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="">You have no quizzes</MenuItem>
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -290,6 +307,13 @@ const EditQuestion = () => {
                     onChange={(event) => handleCheckBox(event, c.id)}
                   />
                 </Typography>
+                {formSubmitted &&
+                      !c.is_correct &&
+                      !isCorrectAnswerSelected(questionDetails.choices) && (
+                        <FormHelperText error>
+                          Please select a correct answer
+                        </FormHelperText>
+                      )}
               </FormControl>
             </Box>
           ))}
