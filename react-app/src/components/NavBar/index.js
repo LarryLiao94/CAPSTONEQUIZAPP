@@ -35,7 +35,7 @@ export default function ButtonAppBar() {
   let history = useHistory();
 
   const loggedSession = useSelector((state) => state.session.user);
-  const menuCategories = useSelector((state) => state.categories.categories);
+  const menuCategories = useSelector((state) => state.categories);
 
   const handleCreateMenuClick = (event) => {
     setCreateAnchorEl(event.currentTarget);
@@ -113,10 +113,6 @@ export default function ButtonAppBar() {
       Loading...
     </div>;
   }
-
-  console.log({BOOLEANCHANGE: Boolean(userAnchorEl)})
-
-  console.log(Object.values(menuCategories));
 
   return (
     <Box sx={{ flexGrow: 1 }}>

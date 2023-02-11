@@ -13,6 +13,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { addQuizThunk } from "../../store/quiz";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { FormHelperText } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +58,10 @@ function CreateQuiz() {
   const dispatch = useDispatch();
   const classes = useStyles();
 
+  const isCorrectAnswerSelected = (choices) => {
+    return choices.some((c) => c.is_correct === true);
+  };
+
   const handleAddQuestion = () => {
     const newQuestion = {
       question_text: "",
@@ -77,7 +82,7 @@ function CreateQuiz() {
       if (prevState.length > 0) {
         return prevState.slice(0, prevState.length - 1);
       } else {
-        return prevState;
+        return;
       }
     });
   };
@@ -97,13 +102,11 @@ function CreateQuiz() {
         if (c.choice === "") {
           choiceEmpty = true;
         }
-
-        if (!c.is_correct) {
-          checkboxChecked = true;
-          setShowCheckBoxError(true);
-        }
       });
     });
+    if(quiz.every(q => isCorrectAnswerSelected(q.choices))){
+      checkboxChecked = true
+    }
 
     if (!titleValid) {
       return;
@@ -114,12 +117,13 @@ function CreateQuiz() {
     } else if (!checkboxChecked) {
       return;
     }
+    
+
+    
 
     const quizItem = { title, questions: quiz };
-    console.log("quizItem!!!", quizItem);
     await dispatch(addQuizThunk({ title, questions: quizItem.questions }));
     history.push(`/dashboard`);
-    console.log(quiz);
   };
 
   const handleTitleChange = (e) => {
@@ -155,26 +159,47 @@ function CreateQuiz() {
     setQuiz(newQuiz);
   };
 
+  // const handleChoiceChange = (e, index) => {
+  //   const value = e.target.value;
+  //   const name = e.target.name;
+  //   if (!value) {
+  //     setChoiceError({ ...choiceError, [index]: "This field is required" });
+  //   } else {
+  //     setChoiceError({ ...choiceError, [index]: "" });
+  //     const newQuiz = quiz.map((q) => {
+  //       if (q.name === name) {
+  //         q.choices.map((c, i) => {
+  //           if (index === i) {
+  //             c.choice = value;
+  //           }
+  //           return c;
+  //         });
+  //       }
+  //       return q;
+  //     });
+  //     setQuiz(newQuiz);
+  //   }
+  // };
   const handleChoiceChange = (e, index) => {
     const value = e.target.value;
     const name = e.target.name;
-    if (!value) {
-      setChoiceError({ ...choiceError, [index]: "This field is required" });
-    } else {
+    if (value) {
       setChoiceError({ ...choiceError, [index]: "" });
-      const newQuiz = quiz.map((q) => {
-        if (q.name === name) {
-          q.choices.map((c, i) => {
-            if (index === i) {
-              c.choice = value;
-            }
-            return c;
-          });
-        }
-        return q;
-      });
-      setQuiz(newQuiz);
+    } else {
+      setChoiceError({ ...choiceError, [index]: "This field is required" });
     }
+    const newQuiz = quiz.map((q) => {
+      if (q.name === name) {
+        q.choices.map((c, i) => {
+          if (index === i) {
+            c.choice = value;
+          }
+          return c;
+        });
+      }
+      return q;
+    });
+    setQuiz(newQuiz);
   };
 
   const handleQuestiontTextChange = (e) => {
@@ -190,12 +215,13 @@ function CreateQuiz() {
     setQuiz(newQuiz);
   };
 
-  // useEffect(() => {
-  //   console.log("quiz>>", quiz)
-  // }, [quiz]);
+
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}>
+    <Container
+      maxWidth="false"
+      sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}
+    >
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2" component="h3">
@@ -264,7 +290,7 @@ function CreateQuiz() {
                       }
                     />
                   </FormControl>
-                  <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                  <FormControl error={formSubmitted && !isCorrectAnswerSelected(question.choices)} fullWidth sx={{ p: 2 }} variant="filled">
                     <Typography>
                       Is Correct:
                       <Checkbox
@@ -273,6 +299,13 @@ function CreateQuiz() {
                         onChange={(event) => handleCheckBox(event, i)}
                       />
                     </Typography>
+                    {formSubmitted &&
+                      !c.is_correct &&
+                      !isCorrectAnswerSelected(question.choices) && (
+                        <FormHelperText error>
+                          Please select a correct answer
+                        </FormHelperText>
+                      )}
                   </FormControl>
                 </Box>
               ))}
@@ -288,15 +321,16 @@ function CreateQuiz() {
               >
                 Add Question
               </Button>
-
-              <Button
-                size="large"
-                variant="contained"
-                startIcon={<DeleteIcon />}
-                onClick={handleRemoveQuestion}
-              >
-                Remove Question
-              </Button>
+              {quiz.length > 1 && (
+                <Button
+                  size="large"
+                  variant="contained"
+                  startIcon={<DeleteIcon />}
+                  onClick={handleRemoveQuestion}
+                >
+                  Remove Question
+                </Button>
+              )}
 
               <Button
                 size="large"
@@ -307,13 +341,13 @@ function CreateQuiz() {
                 Submit
               </Button>
 
-              {showCheckBoxError && (
+              {/* {showCheckBoxError && (
                 <div className="checkbox-error">
                   <small className="text-danger">
                     Please select a checkbox!
                   </small>
                 </div>
-              )}
+              )} */}
             </Stack>
           </FormControl>
         </Box>

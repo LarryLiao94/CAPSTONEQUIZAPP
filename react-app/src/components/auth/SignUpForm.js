@@ -16,12 +16,16 @@ const SignUpForm = () => {
 
   const onSignUp = async (e) => {
     e.preventDefault();
+    if(!email.includes("@")) {
+      setErrors(["Email is not a valid email"])
+      return;
+    }
     if (password === repeatPassword) {
       try {
         await dispatch(signUp(username, email, password));
       } catch (e) {
         setErrors(e.errors || [e.message]);
-        console.log(errors.email);
+
       }
     } else {
       setErrors(["Password does not match"]);

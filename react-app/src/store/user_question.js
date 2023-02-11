@@ -47,7 +47,6 @@ export const createUserQuestion = (user_question) => async (dispatch) => {
     });
     if (response.ok) {
     const data = await response.json();
-    console.log(data)
     dispatch(postUserQuestion(data.user_question));
   };
 };

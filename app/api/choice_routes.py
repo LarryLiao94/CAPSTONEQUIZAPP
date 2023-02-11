@@ -11,7 +11,7 @@ def update_choice(id):
     form = ChoiceForm(csrf_enabled=False)
     if form.validate():
         choice.choice = form.choice.data
-        # choice.is_correct = form.is_correct.data
+        choice.is_correct = form.is_correct.data
         db.session.commit()
         return jsonify({'choice': choice.to_dict()}), 201
     else:

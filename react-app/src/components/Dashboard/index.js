@@ -24,6 +24,8 @@ function Dashboard() {
   const { quizzes } = useSelector((state) => state.quizzes);
   // const { user } = useSelector((state) => state.session.user)
 
+
+
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -34,6 +36,9 @@ function Dashboard() {
   
 
   useEffect(() => {
+    if(quizzes){
+      setLoading(false);
+    }
     const allQuiz = async () => {
       const allQuizzes = await dispatch(getAllQuizzesThunk());
       setLoading(false);

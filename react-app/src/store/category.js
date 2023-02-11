@@ -42,8 +42,9 @@ const categoriesReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case GET_ALL_CATEGORIES:
-      newState.categories = action.categories;
-      return newState;
+      // newState = {...newState, ...action.categories}
+      // return newState;
+      return {...newState, ...action.categories};
     case GET_CATEGORY_BY_ID:
       newState.category = action.category;
       return newState;

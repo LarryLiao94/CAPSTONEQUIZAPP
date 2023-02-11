@@ -46,7 +46,6 @@ export const updateQuizSubmit = (quiz) => ({
 const initialState = {};
 
 export const addQuizThunk = (quiz) => async (dispatch) => {
-  console.log('got here!!!!!', quiz)
   const response = await csrfFetch(`/api/quizzes/`, {
     method: "POST",
     headers: {
@@ -56,10 +55,8 @@ export const addQuizThunk = (quiz) => async (dispatch) => {
   });
   if (response.ok) {
     const newQuiz = await response.json();
-    console.log('?>>>>>>>>>>>>>', newQuiz)
     dispatch(addQuiz(newQuiz));
   }
-  console.log('asodfijaweo;ifja', response)
   return response;
 };
 
@@ -83,7 +80,6 @@ export const getQuizByIdThunk = (id) => async (dispatch) => {
 
   const data = await res.json();
 
-  console.log("data", data);
 
   if (res.ok) {
     dispatch(getQuizById(data));

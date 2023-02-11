@@ -24,20 +24,26 @@ import { editChoiceThunk } from "../../store/choice";
 import { removeQuestionThunk } from "../../store/question";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import {FormHelperText} from "@mui/material";
 
 function EditQuiz() {
   const [loading, setLoading] = useState(true);
   const [quiz, setQuiz] = useState(null);
+  const [error, setError] = useState({ title: "" });
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const { id } = useParams();
 
+  const isCorrectAnswerSelected = (choices) => {
+    return choices.some((c) => c.is_correct === true);
+  };
+
   useEffect(async () => {
     const quizData = await getQuiz(id);
     if (quizData?.title) {
-      console.log("quizz data", quizData);
       setQuiz(quizData);
       setLoading(false);
     }
@@ -45,19 +51,52 @@ function EditQuiz() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormSubmitted(true);
+    let questionTextEmpty = false;
+    let choiceEmpty = false;
+    let checkboxChecked = false;
+    if (!quiz.title) {
+      setError({ title: "Quiz title is required" });
+      return;
+    }
+    quiz.questions.forEach((q) => {
+      if (q.question_text === "") {
+        questionTextEmpty = true;
+      }
+
+      q.choices.forEach((c) => {
+        if (c.choice === "") {
+          choiceEmpty = true;
+        }
+      });
+    });
+    if (quiz.questions.every((q) => isCorrectAnswerSelected(q.choices))) {
+      checkboxChecked = true;
+    }
+    if (questionTextEmpty) {
+      return;
+    } else if (choiceEmpty) {
+      return;
+    } else if (!checkboxChecked) {
+      return;
+    }
     const quizItem = { title, questions: quiz };
-    console.log("quizItem!!!", quizItem);
     await dispatch(editQuizThunk(id, { title: quiz.title }));
     quiz.questions.forEach(async (q) => {
       await dispatch(
-        editQuestionThunk(q.id, { question_text: q.question_text, category_id: 1, quiz_id: quiz.id })
+        editQuestionThunk(q.id, {
+          question_text: q.question_text,
+          category_id: 1,
+          quiz_id: quiz.id,
+        })
       );
       q.choices.forEach(async (c) => {
-        await dispatch(editChoiceThunk(c.id, { choice: c.choice }));
+        await dispatch(
+          editChoiceThunk(c.id, { choice: c.choice, is_correct: c.is_correct })
+        );
       });
     });
     history.push(`/dashboard`);
-    console.log(quiz);
   };
 
   //   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -67,9 +106,10 @@ function EditQuiz() {
 
   const handleCheckBox = (e, itemID) => {
     const id = e.target.id;
+    const name = e.target.name;
     const newQuiz = quiz.questions.map((q) => {
       if (q.id === Number(id)) {
-        q.choices.map((c) => {
+        q.choices = q.choices.map((c) => {
           if (c.id === itemID) {
             c.is_correct = !c.is_correct;
           } else {
@@ -81,10 +121,7 @@ function EditQuiz() {
       return q;
     });
 
-    let getQuiz = quiz;
-    getQuiz.questions = newQuiz;
-
-    setQuiz(getQuiz);
+    setQuiz({ ...quiz, questions: newQuiz });
   };
 
   const handleChoiceChange = (e, itemID) => {
@@ -125,20 +162,24 @@ function EditQuiz() {
   };
 
   useEffect(() => {
-    console.log("quizz", quiz);
+    console.log(quiz);
   }, [quiz]);
 
   if (loading) {
-    return <div style={{
-      fontSize: "30px",
-      textAlign: "center",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)"
-    }}>
-      Loading...
-    </div>
+    return (
+      <div
+        style={{
+          fontSize: "30px",
+          textAlign: "center",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        Loading...
+      </div>
+    );
   }
 
   const { questions, title } = quiz;
@@ -172,6 +213,8 @@ function EditQuiz() {
               value={title}
               variant="standard"
               onChange={handleChange}
+              error={!title}
+              helperText={!title && "Quiz title is required"}
             />
           </FormControl>
           {questions?.map((question, index) => (
@@ -183,6 +226,12 @@ function EditQuiz() {
                   variant="standard"
                   defaultValue={question.question_text}
                   onChange={(e) => handleQuestiontTextChange(e)}
+                  error={formSubmitted && question.question_text === ""}
+                  helperText={
+                    formSubmitted && question.question_text === ""
+                      ? "Please enter a question"
+                      : ""
+                  }
                 />
               </FormControl>
               {question.choices.map((c, i) => (
@@ -194,18 +243,31 @@ function EditQuiz() {
                       variant="standard"
                       defaultValue={c.choice}
                       onChange={(event) => handleChoiceChange(event, c.id)}
+                      error={formSubmitted && c.choice === ""}
+                      helperText={
+                        formSubmitted && c.choice === ""
+                          ? "Please enter a choice"
+                          : ""
+                      }
                     />
                   </FormControl>
                   <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                     <Typography>
                       Is Correct:
                       <Checkbox
-                        defaultChecked={c.is_correct}
+                        checked={c.is_correct}
                         id={question.id}
                         name={"quesion-" + question.id}
                         onChange={(event) => handleCheckBox(event, c.id)}
                       />
                     </Typography>
+                    {formSubmitted &&
+                      !c.is_correct &&
+                      !isCorrectAnswerSelected(question.choices) && (
+                        <FormHelperText error>
+                          Please select a correct answer
+                        </FormHelperText>
+                      )}
                   </FormControl>
                 </Box>
               ))}

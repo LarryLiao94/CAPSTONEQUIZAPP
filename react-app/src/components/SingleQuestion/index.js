@@ -38,7 +38,6 @@ function SingleQuestion() {
 
   const handleSubmit = () => {
     // Handle form submission here
-    console.log("Form submitted");
     let getCorrectAnswers = 0;
 
     const getCorrectChoices = singularQuestion?.choices.map((choice) => {

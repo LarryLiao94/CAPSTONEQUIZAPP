@@ -31,6 +31,7 @@ function CreateQuestion() {
   const [loading, setLoading] = useState(true);
   const [category_id, setCategory_Id] = useState(null);
   const [quiz_id, setQuiz_id] = useState(null);
+  const [categoryDetails, setCategoryDetails] = useState(null);
   const [question, setQuestion] = useState({
     question_text: "",
     category_id: null,
@@ -50,7 +51,7 @@ function CreateQuestion() {
   const dispatch = useDispatch();
   const quizzes = useSelector((state) => state.quizzes.quizzes);
 
-  const categories = useSelector((state) => state.categories.categories);
+  const categories = useSelector((state) => state.categories);
 
   const handleQuestiontTextChange = (e) => setQuestion_Text(e.target.value);
 
