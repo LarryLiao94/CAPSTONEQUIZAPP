@@ -42,6 +42,9 @@ function Profile() {
   };
 
   useEffect(() => {
+    if(quizzes){
+      setLoading(false);
+    }
     const profileQuiz = async () => {
       const profileQuizzes = await dispatch(getProfileQuizThunk());
       setLoading(false);
@@ -50,6 +53,9 @@ function Profile() {
   }, [dispatch]);
 
   useEffect(() => {
+    if(questions){
+      setLoading(false)
+    }
     const profileQuestion = async () => {
       const profileQuestions = await dispatch(getProfileQuestionThunk());
       setLoading(false);

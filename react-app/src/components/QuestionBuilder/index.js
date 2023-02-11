@@ -93,10 +93,12 @@ function CreateQuestion() {
     let questionItem = {};
     if (!question_text) {
       setError({ ...error, question_text: "Question text is required." });
+      return;
     }
 
     if (!category_id) {
       setError({ ...error, category_id: "Category is required." });
+      return;
     }
 
     question?.choices.forEach((c) => {
@@ -109,8 +111,10 @@ function CreateQuestion() {
     });
     if (isChoiceBlank) {
       setShowChoiceError(true);
+      return;
     } else if (!isCheckBoxChecked) {
       setShowCheckBoxError(true);
+      return;
     } else {
       setShowChoiceError(false);
       setShowCheckBoxError(false);
