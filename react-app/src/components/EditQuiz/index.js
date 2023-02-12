@@ -26,6 +26,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import {FormHelperText} from "@mui/material";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& .MuiTextField-root": {
+      margin: theme.spacing(1),
+      width: "25ch",
+    },
+  },
+  questionContainer: {
+    backgroundColor: "lightgray",
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  choiceContainer: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 function EditQuiz() {
   const [loading, setLoading] = useState(true);
   const [quiz, setQuiz] = useState(null);
@@ -34,6 +51,7 @@ function EditQuiz() {
 
   const history = useHistory();
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const { id } = useParams();
 
@@ -215,7 +233,7 @@ function EditQuiz() {
           </FormControl>
           {questions?.map((question, index) => (
             <Box key={index + 1}>
-              <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+              <FormControl fullWidth sx={{ p: 2 }} variant="filled" className={classes.questionContainer}>
                 <TextField
                   id={question.id}
                   label={"Question #" + (index + 1)}
