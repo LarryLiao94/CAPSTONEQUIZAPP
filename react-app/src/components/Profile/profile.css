@@ -2,3 +2,23 @@
     justify-content: center;
     margin-top: 50px;
 }
+
+.no-questions-text {
+    font-size: 32px;
+    text-align: center;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .create-question-button {
+    margin: 0 auto;
+    display: block;
+    font-size: 20px;
+    padding: 20px 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

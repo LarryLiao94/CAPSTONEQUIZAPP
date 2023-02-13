@@ -19,11 +19,17 @@ import {
 } from "../../store/question";
 import { csrfFetch } from "../../store/csrf";
 import { Pagination } from "@mui/material";
+import {Tab, Tabs} from "@mui/material";
+import {Button} from "@mui/material";
 import "./profile.css";
 
 function Profile() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeTab, setActiveTab] = useState("My Quizzes");
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
   const questionsPerPage = 12;
 
   const history = useHistory();
@@ -77,17 +83,124 @@ function Profile() {
   }
 
   return (
+    // <Container sx={{ paddingTop: "50px" }}>
+    //   <Typography variant="h3" align="center">
+    //     My Quizzes
+    //   </Typography>
+    //   <Grid
+    //     id="quiz-card-wrapper"
+    //     container
+    //     spacing={5}
+    //     sx={{ paddingTop: "50px" }}
+    //   >
+    //     {quizzes?.map((quiz) => {
+    //       const { id, title, description, user_id } = quiz;
+    //       return (
+    //         <Grid item xs={12} md={6} lg={4} key={id}>
+    //           <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
+    //             <CardActionArea onClick={() => history.push(`/quiz/${id}`)}>
+    //               <CardContent>
+    //                 <Typography variant="h5">{title}</Typography>
+    //                 <Typography variant="subtitle1">{description}</Typography>
+    //               </CardContent>
+    //             </CardActionArea>
+    //             <CardActions>
+    //               <>
+    //                 <IconButton
+    //                   aria-label="edit"
+    //                   className="edit-icon"
+    //                   onClick={() => history.push(`/quiz/edit/${id}`)}
+    //                 >
+    //                   <EditIcon />
+    //                 </IconButton>
+    //                 <IconButton
+    //                   aria-label="delete"
+    //                   className="delete-icon"
+    //                   onClick={() => {
+    //                     dispatch(removeQuizThunk(id));
+    //                   }}
+    //                 >
+    //                   <DeleteIcon />
+    //                 </IconButton>
+    //               </>
+    //             </CardActions>
+    //           </Card>
+    //         </Grid>
+    //       );
+    //     })}
+    //   </Grid>
+    //   <Typography variant="h3" align="center" marginTop={5}>
+    //     My Questions
+    //   </Typography>
+    //   <Grid
+    //     id="quiz-card-wrapper"
+    //     container
+    //     spacing={5}
+    //     sx={{ paddingTop: "50px" }}
+    //   >
+    //     {questionsToShow?.map((question) => {
+    //       const { id, question_text, description, user_id } = question;
+    //       return (
+    //         <Grid item xs={12} md={6} lg={4} key={id}>
+    //           <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
+    //             <CardActionArea onClick={() => history.push(`/question/edit/${id}`)}>
+    //               <CardContent>
+    //                 <Typography variant="h5">{question_text}</Typography>
+    //                 <Typography variant="subtitle1">{description}</Typography>
+    //               </CardContent>
+    //             </CardActionArea>
+    //             <CardActions>
+    //               <>
+    //                 <IconButton
+    //                   aria-label="edit"
+    //                   className="edit-icon"
+    //                   onClick={() => history.push(`/question/edit/${id}`)}
+    //                 >
+    //                   <EditIcon />
+    //                 </IconButton>
+    //                 <IconButton
+    //                   aria-label="delete"
+    //                   className="delete-icon"
+    //                   onClick={() => {
+    //                     dispatch(removeQuestionThunk(id));
+    //                   }}
+    //                 >
+    //                   <DeleteIcon />
+    //                 </IconButton>
+    //               </>
+    //             </CardActions>
+    //           </Card>
+    //         </Grid>
+    //       );
+    //     })}
+    //   </Grid>
+      // <Pagination
+      //   sx={{justifyContent: "center", marginTop: "50px"}}
+      //   count={Math.ceil(questions?.length / questionsPerPage)}
+      //   page={currentPage}
+      //   color="primary"
+      //   onChange={handlePageChange}
+      //   className="pagination-class"
+      // />
+    // </Container>
     <Container sx={{ paddingTop: "50px" }}>
-      <Typography variant="h3" align="center">
-        My Quizzes
-      </Typography>
-      <Grid
-        id="quiz-card-wrapper"
-        container
-        spacing={5}
-        sx={{ paddingTop: "50px" }}
-      >
-        {quizzes?.map((quiz) => {
+      <Tabs value={activeTab} onChange={handleTabChange}>
+        <Tab label="My Quizzes" value="My Quizzes" />
+        <Tab label="My Questions" value="My Questions" />
+      </Tabs>
+      {activeTab === "My Quizzes" && (
+  <>
+    <Typography variant="h3" align="center">
+      My Quizzes
+    </Typography>
+    <Grid
+      id="quiz-card-wrapper"
+      container
+      spacing={5}
+      sx={{ paddingTop: "50px" }}
+    >
+      {quizzes?.length > 0 ? (
+        quizzes.map((quiz) => {
           const { id, title, description, user_id } = quiz;
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
@@ -121,18 +234,40 @@ function Profile() {
               </Card>
             </Grid>
           );
-        })}
-      </Grid>
-      <Typography variant="h3" align="center" marginTop={5}>
-        My Questions
-      </Typography>
-      <Grid
-        id="quiz-card-wrapper"
-        container
-        spacing={5}
-        sx={{ paddingTop: "50px" }}
+        })
+      ) : (
+          <>
+        <Typography variant="h5" align="center" className="no-questions-text" style={{ color: "#bbb" }}>
+          Looks like you haven't created any quizzes. Click the button to create your own!
+        </Typography>
+        <Button
+        variant="contained"
+        color="primary"
+        className="create-question-button"
+        onClick={() => history.push("/quiz")}
       >
-        {questionsToShow?.map((question) => {
+        Create a Quiz
+      </Button>
+        </>
+      )}
+    </Grid>
+    
+  </>
+)}
+
+{activeTab === "My Questions" && (
+  <>
+    <Typography variant="h3" align="center">
+      My Questions
+    </Typography>
+    <Grid
+      id="quiz-card-wrapper"
+      container
+      spacing={5}
+      sx={{ paddingTop: "50px" }}
+    >
+      {questionsToShow?.length > 0 ? (
+        questionsToShow.map((question) => {
           const { id, question_text, description, user_id } = question;
           return (
             <Grid item xs={12} md={6} lg={4} key={id}>
@@ -165,18 +300,39 @@ function Profile() {
                 </CardActions>
               </Card>
             </Grid>
+            
           );
-        })}
-      </Grid>
+        })
+      ) : (
+        <>
+        <Typography variant="h5" align="center" className="no-questions-text" style={{ color: "#bbb" }}>
+          Looks like you haven't created any questions. Click the button to create your own!
+        </Typography>
+        <Button
+    variant="contained"
+    color="primary"
+    className="create-question-button"
+    onClick={() => history.push("/questions/new")}
+  >
+    Create a Question
+  </Button>
+      </>
+      )}
+    </Grid>
+    {questionsToShow?.length > 0 && (
       <Pagination
-        sx={{justifyContent: "center", marginTop: "50px"}}
-        count={Math.ceil(questions?.length / questionsPerPage)}
-        page={currentPage}
-        color="primary"
-        onChange={handlePageChange}
-        className="pagination-class"
-      />
-    </Container>
+          sx={{justifyContent: "center", marginTop: "50px"}}
+          count={Math.ceil(questions?.length / questionsPerPage)}
+          page={currentPage}
+          color="primary"
+          onChange={handlePageChange}
+          className="pagination-class"
+        />
+
+    )}
+  </>
+)}
+      </Container>
   );
 }
 
