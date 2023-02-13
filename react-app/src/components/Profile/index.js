@@ -30,7 +30,7 @@ function Profile() {
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-  const questionsPerPage = 12;
+  const questionsPerPage = 9;
 
   const history = useHistory();
   const dispatch = useDispatch();

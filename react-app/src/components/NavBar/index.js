@@ -62,6 +62,7 @@ export default function ButtonAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
     setUserAnchorEl(null);
+    setCategoriesAnchorEl(null);
   };
 
   const handleUserMenuClick = (event) => {
@@ -75,6 +76,7 @@ export default function ButtonAppBar() {
 
   const handleCategoriesMenuClick = (event) => {
     setCategoriesAnchorEl(event.currentTarget);
+    
   };
 
   const handleCategoriesMenuClose = () => {
