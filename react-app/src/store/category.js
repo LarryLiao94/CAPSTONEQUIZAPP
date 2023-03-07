@@ -2,6 +2,12 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_CATEGORIES = "categories/GET_ALL_CATEGORIES";
 const GET_CATEGORY_BY_ID = "categories/GET_CATEGORY_BY_ID";
+const UPDATE_CATEGORY_SUBMIT = "categories/UPDATE_CATEGORY_SUBMIT";
+
+export const updateCategorySubmit = (category) => ({
+  type: UPDATE_CATEGORY_SUBMIT,
+  category
+})
 
 const getAllCategories = (categories) => ({
   type: GET_ALL_CATEGORIES,
@@ -48,6 +54,8 @@ const categoriesReducer = (state = initialState, action) => {
     case GET_CATEGORY_BY_ID:
       newState.category = action.category;
       return newState;
+    case UPDATE_CATEGORY_SUBMIT:
+      return {...action.category}
     default:
       return state;
   }

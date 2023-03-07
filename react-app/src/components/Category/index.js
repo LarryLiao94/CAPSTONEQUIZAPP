@@ -11,6 +11,10 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useSelector, useDispatch } from "react-redux";
 import { Snackbar, IconButton } from "@mui/material";
+import {
+  getCategoryByIdThunk,
+  updateCategorySubmit,
+} from "../../store/category";
 import CloseIcon from "@mui/icons-material/Close";
 
 // const shuffle = (array) => {
@@ -31,6 +35,7 @@ function Category() {
 
   const { id } = useParams();
   const { user } = useSelector((state) => state.session);
+  const dispatch = useDispatch();
   const [categoryDetails, setCategoryDetails] = useState(null);
   const categories = useSelector((state) => state.categories);
 
@@ -57,6 +62,71 @@ function Category() {
       </div>
     );
   }
+
+  const handleSubmit = () => {
+    // Handle form submission here
+    let getCorrectAnswers = 0;
+
+    const getCorrectChoices = categoryDetails?.questions?.map((q) => {
+      q.choices.map((choice) => {
+        if (
+          choice.id === selectedAnswers[choice.question_id] &&
+          choice.is_correct
+        ) {
+          choice.getClass = "correct";
+          choice.selected = true;
+          getCorrectAnswers++;
+        }
+
+        if (choice.is_correct) {
+          choice.getClass = "correct";
+        }
+
+        if (
+          choice.id === selectedAnswers[choice.question_id] &&
+          !choice.is_correct
+        ) {
+          choice.getClass = "incorrect";
+          choice.selected = true;
+        }
+        return choice;
+      });
+
+      return q;
+    });
+
+    let getCategories = categories;
+    getCategories.questions = getCorrectChoices;
+
+    dispatch(updateCategorySubmit(getCategories));
+    setCorrectChoices(getCorrectChoices);
+    setCorrectAnswers(getCorrectAnswers);
+    setSubmitted(true);
+    setOpen(true);
+  };
+
+  const handleRetake = async () => {
+    await dispatch(getCategoryByIdThunk(id));
+    setSelectedAnswers({});
+    setCorrectAnswers(0);
+    setCorrectChoices([]);
+    setSubmitted(false);
+    setOpen(false);
+    const resetCategories = { ...categories };
+    resetCategories.questions = resetCategories.questions.map((q) => {
+      q.choices = q.choices.map((c) => {
+        delete c.getClass;
+        delete c.selected;
+        return c;
+      });
+      return q;
+    });
+    dispatch(updateCategorySubmit(resetCategories));
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
@@ -114,48 +184,48 @@ function Category() {
             </Box>
           ))}
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
-          <Stack direction="row" spacing={2}>
-            {!submitted && (
-              <Button
-                size="large"
-                variant="contained"
-                // onClick={handleSubmit}
-                color="secondary"
-              >
-                Submit
-              </Button>
-            )}
+            <Stack direction="row" spacing={2}>
+              {!submitted && (
+                <Button
+                  size="large"
+                  variant="contained"
+                  onClick={handleSubmit}
+                  color="secondary"
+                >
+                  Submit
+                </Button>
+              )}
 
-            {submitted && (
-              <Button
-                size="large"
-                variant="contained"
-                // onClick={handleRetake}
-                color="primary"
-              >
-                Retake
-              </Button>
-            )}
+              {submitted && (
+                <Button
+                  size="large"
+                  variant="contained"
+                  onClick={handleRetake}
+                  color="primary"
+                >
+                  Retake
+                </Button>
+              )}
+            </Stack>
+          </FormControl>
         </Stack>
-        </FormControl>
-      </Stack>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        open={open}
-        // onClose={handleClose}
-        message={`You got ${correctAnswers} out of ${categoryDetails?.questions?.length} correct`}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            // onClick={handleClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
-    </Container>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={open}
+          // onClose={handleClose}
+          message={`You got ${correctAnswers} out of ${categoryDetails?.questions?.length} correct`}
+          action={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
+      </Container>
     </>
   );
 }
