@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^1.2.2",
     "bootstrap": "^5.2.3",
+    "chart.js": "^4.2.1",
     "http-proxy-middleware": "^1.0.5",
     "js-cookie": "^3.0.1",
     "react": "^17.0.2",
@@ -54,5 +55,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "babel-loader": "^8.1.0"
+  }
 }

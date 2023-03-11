@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, json
 from flask_login import current_user, login_required
 from app.models import Question, db, User, Choice, User_Question, Quiz, Category
+from app.forms.user_question_form import UserQuestionForm
 
 user_question_routes = Blueprint('user_questions', __name__)
 
@@ -37,18 +38,20 @@ def get_incorrect_user_questions():
     })
 
 @user_question_routes.route('/', methods=['POST'])
-@login_required
+# @login_required
 def create_user_question():
-    data = request.get_json()
-    user_id = current_user.id
-    question_id = data.get('question_id')
-    user_choice = data.get('user_choice')
-
-    user_question = User_Question(user_id=user_id, question_id=question_id, user_choice=user_choice)
-    db.session.add(user_question)
-    db.session.commit()
-
-    return jsonify({'user_question': user_question.to_dict()}), 201
+    form = UserQuestionForm(csrf_enabled=False)
+    if form.validate():
+        user_question = User_Question(
+            user_id=current_user.id,
+            question_id=form.question_id.data,
+            user_choice=form.user_choice.data
+        )
+        db.session.add(user_question)
+        db.session.commit()
+        return jsonify({'user_question': user_question.to_dict()}), 201
+    else:
+        return jsonify({'error': form.errors}), 400
 
 # @user_question_routes.route('/quiz/<int:quiz_id>')
 # @login_required

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Radio from "@mui/material/Radio";
@@ -11,10 +12,13 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { getQuizByIdThunk, updateQuizSubmit } from "../../store/quiz";
+import { createUserQuestion } from "../../store/user_question";
 import { useSelector, useDispatch } from "react-redux";
 import { Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Quiz.css";
+import { Modal } from "../../context/Modal";
+import QuizResults from "../Results";
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -31,6 +35,8 @@ function Quiz() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [correctChoices, setCorrectChoices] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -45,58 +51,108 @@ function Quiz() {
   }, [id, dispatch]);
 
   if (loading) {
-    return <div style={{
-      fontSize: "30px",
-      textAlign: "center",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)"
-    }}>
-      Loading...
-    </div>
+    return (
+      <div
+        style={{
+          fontSize: "30px",
+          textAlign: "center",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        Loading...
+      </div>
+    );
   }
 
+  const handleOpen = () => {
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = () => {
-    // Handle form submission here
-    let getCorrectAnswers = 0;
-
-    const getCorrectChoices = quizzes.questions.map((q) => {
-      q.choices.map((choice) => {
-        if (
-          choice.id === selectedAnswers[choice.question_id] &&
-          choice.is_correct
-        ) {
-          choice.getClass = "correct";
-          choice.selected = true;
-          getCorrectAnswers++;
+    let selectedAnswersCount = Object.keys(selectedAnswers).length;
+    let unansweredQuestions = [];
+  
+    // If the number of selected answers is equal to the number of questions,
+    // check and display correct/incorrect answers
+    if (selectedAnswersCount === quizzes.questions.length) {
+      let getCorrectAnswers = 0;
+      const getCorrectChoices = quizzes.questions.map((q) => {
+        const userQuestion = {
+          question_id: q.id,
+          choice_id: selectedAnswers[q.id] || null,
+        };
+        q.choices.map((choice) => {
+          choice.getClass = ""; // Reset getClass property
+          if (
+            choice.id === selectedAnswers[choice.question_id] &&
+            choice.is_correct
+          ) {
+            choice.getClass = "correct";
+            choice.selected = true;
+            getCorrectAnswers++;
+          }
+  
+          if (choice.is_correct) {
+            choice.getClass = "correct";
+          }
+  
+          if (
+            choice.id === selectedAnswers[choice.question_id] &&
+            !choice.is_correct
+          ) {
+            choice.getClass = "incorrect";
+            choice.selected = true;
+          }
+          return choice;
+        });
+        if (!selectedAnswers[q.id]) {
+          unansweredQuestions.push(q.question_text);
         }
 
-        if (choice.is_correct) {
-          choice.getClass = "correct";
+        if (selectedAnswers[q.id]) {
+          // Dispatch action to post user question
+          const newUserQuestion = {
+            question_id: q.id,
+            user_choice: selectedAnswers[q.id]
+          }
+          dispatch(createUserQuestion(newUserQuestion));
         }
-
-        if (
-          choice.id === selectedAnswers[choice.question_id] &&
-          !choice.is_correct
-        ) {
-          choice.getClass = "incorrect";
-          choice.selected = true;
-        }
-        return choice;
+        
+  
+        return q;
       });
-
-      return q;
-    });
-
-    let getQuizzes = quizzes;
-    getQuizzes.questions = getCorrectChoices;
-
-    dispatch(updateQuizSubmit(getQuizzes));
-    setCorrectChoices(getCorrectChoices);
-    setCorrectAnswers(getCorrectAnswers);
-    setSubmitted(true);
-    setOpen(true);
+  
+      if (unansweredQuestions.length > 0) {
+        // display an alert with the list of unanswered questions
+        const unansweredString = unansweredQuestions.join("\n- ");
+        alert(`Please answer the following questions:\n- ${unansweredString}`);
+        return;
+      }
+  
+      let getQuizzes = quizzes;
+      getQuizzes.questions = getCorrectChoices;
+  
+      dispatch(updateQuizSubmit(getQuizzes));
+      setCorrectChoices(getCorrectChoices);
+      setCorrectAnswers(getCorrectAnswers);
+      setSubmitted(true);
+      setOpen(true);
+      handleOpen();
+    } else {
+      // If the number of selected answers is less than the number of questions,
+      // display an alert with the list of unanswered questions
+      quizzes.questions.forEach((q) => {
+        if (!selectedAnswers[q.id]) {
+          unansweredQuestions.push(q.question_text);
+        }
+      });
+  
+      const unansweredString = unansweredQuestions.join("\n- ");
+      alert(`Please answer the following questions:\n- ${unansweredString}`);
+    }
   };
 
   const handleRetake = async () => {
@@ -107,19 +163,33 @@ function Quiz() {
     setSubmitted(false);
     setOpen(false);
 
-    // let quiz = quizzes;
-    // quiz.questions.forEach((question) => {
-    //   question.choices = shuffle(question.choices);
-    // });
-    // dispatch(updateQuizSubmit(quiz));
+    let shuffledQuestions = quizzes.questions.map((question) => {
+      let shuffledChoices = shuffle([...question.choices]);
+      shuffledChoices = shuffledChoices.map((choice) => {
+        choice.getClass = "";
+        return choice;
+      });
+      return {
+        ...question,
+        choices: shuffledChoices,
+      };
+    });
+
+    let shuffledQuiz = { ...quizzes, questions: shuffledQuestions };
+
+    dispatch(updateQuizSubmit(shuffledQuiz));
   };
 
   const handleClose = () => {
     setOpen(false);
+    setIsModalOpen(false);
   };
 
   return (
-    <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}>
+    <Container
+      maxWidth="false"
+      sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}
+    >
       <Stack spacing={10} justifyContent="center" alignItems="center">
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2">{quizzes?.title}</Typography>
@@ -183,14 +253,38 @@ function Quiz() {
             )}
 
             {submitted && (
-              <Button
-                size="large"
-                variant="contained"
-                onClick={handleRetake}
-                color="primary"
-              >
-                Retake
-              </Button>
+              <>
+                <Button
+                  size="large"
+                  variant="contained"
+                  onClick={handleRetake}
+                  color="primary"
+                >
+                  Retake
+                </Button>
+                <Button
+                  size="large"
+                  variant="contained"
+                  onClick={() => setShowResults(true)}
+                  color="secondary"
+                >
+                  Show Results
+                </Button>
+                {showResults && (
+                  <Modal
+                    onClose={() => setShowResults(false)}
+                    onClick={handleClose}
+                  >
+                    <QuizResults
+                      correctAnswers={correctAnswers}
+                      totalQuestions={quizzes?.questions?.length}
+                      questions={correctChoices}
+                      selectedAnswers={selectedAnswers}
+                      handleClose={() => setShowResults(false)}
+                    />
+                  </Modal>
+                )}
+              </>
             )}
           </Stack>
         </FormControl>

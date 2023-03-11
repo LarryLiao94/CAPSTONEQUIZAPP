@@ -38,7 +38,7 @@ export const fetchCorrectUserQuestions = () => {
 };
 
 export const createUserQuestion = (user_question) => async (dispatch) => {
-    const response = await csrfFetch("api/user_questions/", {
+    const response = await csrfFetch("/api/user_questions/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,26 +47,31 @@ export const createUserQuestion = (user_question) => async (dispatch) => {
     });
     if (response.ok) {
     const data = await response.json();
-    dispatch(postUserQuestion(data.user_question));
+    dispatch(postUserQuestion(data));
   };
 };
 
 // Initial State
 const initialState = {
-  allUserQuestions: [],
-  correctUserQuestions: []
+  userQuestions: [],
 };
 
-// Reducer
-export default (state = initialState, action) => {
+const userQuestionsReducer = (state = initialState, action) => {
+  let newState = { ...state };
+
   switch (action.type) {
     case GET_ALL_USER_QUESTIONS:
-      return { ...state, allUserQuestions: action.user_questions };
+      newState.userQuestions = action.user_questions;
+      return newState;
     case GET_CORRECT_USER_QUESTIONS:
-      return { ...state, correctUserQuestions: action.user_questions };
+      newState.userQuestions = action.user_questions;
+      return newState;
     case POST_USER_QUESTION:
-      return { ...state, allUserQuestions: [...state.allUserQuestions, action.user_question] };
+      newState.userQuestions.push(action.user_question);
+      return newState;
     default:
       return state;
   }
 };
+
+export default userQuestionsReducer;

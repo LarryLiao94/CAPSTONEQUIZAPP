@@ -5,13 +5,15 @@ import quizzesReducer from './quiz';
 import categoriesReducer from './category';
 import questionsReducer from './question';
 import choicesReducer from './choice';
+import userQuestionsReducer from './user_question';
 
 const rootReducer = combineReducers({
   session,
   quizzes: quizzesReducer,
   categories: categoriesReducer,
   questions: questionsReducer,
-  choices: choicesReducer
+  choices: choicesReducer,
+  user_questions: userQuestionsReducer
 });
 
 
