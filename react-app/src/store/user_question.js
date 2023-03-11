@@ -23,7 +23,7 @@ const postUserQuestion = (user_question) => ({
 // Asynchronous thunk action creators
 export const fetchAllUserQuestions = () => {
   return async (dispatch) => {
-    const response = await csrfFetch("/user_questions/");
+    const response = await csrfFetch("/api/user_questions/");
     const data = await response.json();
     dispatch(getAllUserQuestions(data.user_questions));
   };
@@ -31,7 +31,7 @@ export const fetchAllUserQuestions = () => {
 
 export const fetchCorrectUserQuestions = () => {
   return async (dispatch) => {
-    const response = await csrfFetch("/user_questions/correct");
+    const response = await csrfFetch("/api/user_questions/correct/");
     const data = await response.json();
     dispatch(getCorrectUserQuestions(data.user_questions));
   };
@@ -61,8 +61,7 @@ const userQuestionsReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case GET_ALL_USER_QUESTIONS:
-      newState.userQuestions = action.user_questions;
-      return newState;
+      return {...newState, ...action.user_questions}
     case GET_CORRECT_USER_QUESTIONS:
       newState.userQuestions = action.user_questions;
       return newState;

@@ -21,6 +21,7 @@ import { csrfFetch } from "../../store/csrf";
 import { Pagination } from "@mui/material";
 import {Tab, Tabs} from "@mui/material";
 import {Button} from "@mui/material";
+import MyPerformance from "../Performance/Performance";
 import "./profile.css";
 
 function Profile() {
@@ -83,111 +84,21 @@ function Profile() {
   }
 
   return (
-    // <Container sx={{ paddingTop: "50px" }}>
-    //   <Typography variant="h3" align="center">
-    //     My Quizzes
-    //   </Typography>
-    //   <Grid
-    //     id="quiz-card-wrapper"
-    //     container
-    //     spacing={5}
-    //     sx={{ paddingTop: "50px" }}
-    //   >
-    //     {quizzes?.map((quiz) => {
-    //       const { id, title, description, user_id } = quiz;
-    //       return (
-    //         <Grid item xs={12} md={6} lg={4} key={id}>
-    //           <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
-    //             <CardActionArea onClick={() => history.push(`/quiz/${id}`)}>
-    //               <CardContent>
-    //                 <Typography variant="h5">{title}</Typography>
-    //                 <Typography variant="subtitle1">{description}</Typography>
-    //               </CardContent>
-    //             </CardActionArea>
-    //             <CardActions>
-    //               <>
-    //                 <IconButton
-    //                   aria-label="edit"
-    //                   className="edit-icon"
-    //                   onClick={() => history.push(`/quiz/edit/${id}`)}
-    //                 >
-    //                   <EditIcon />
-    //                 </IconButton>
-    //                 <IconButton
-    //                   aria-label="delete"
-    //                   className="delete-icon"
-    //                   onClick={() => {
-    //                     dispatch(removeQuizThunk(id));
-    //                   }}
-    //                 >
-    //                   <DeleteIcon />
-    //                 </IconButton>
-    //               </>
-    //             </CardActions>
-    //           </Card>
-    //         </Grid>
-    //       );
-    //     })}
-    //   </Grid>
-    //   <Typography variant="h3" align="center" marginTop={5}>
-    //     My Questions
-    //   </Typography>
-    //   <Grid
-    //     id="quiz-card-wrapper"
-    //     container
-    //     spacing={5}
-    //     sx={{ paddingTop: "50px" }}
-    //   >
-    //     {questionsToShow?.map((question) => {
-    //       const { id, question_text, description, user_id } = question;
-    //       return (
-    //         <Grid item xs={12} md={6} lg={4} key={id}>
-    //           <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
-    //             <CardActionArea onClick={() => history.push(`/question/edit/${id}`)}>
-    //               <CardContent>
-    //                 <Typography variant="h5">{question_text}</Typography>
-    //                 <Typography variant="subtitle1">{description}</Typography>
-    //               </CardContent>
-    //             </CardActionArea>
-    //             <CardActions>
-    //               <>
-    //                 <IconButton
-    //                   aria-label="edit"
-    //                   className="edit-icon"
-    //                   onClick={() => history.push(`/question/edit/${id}`)}
-    //                 >
-    //                   <EditIcon />
-    //                 </IconButton>
-    //                 <IconButton
-    //                   aria-label="delete"
-    //                   className="delete-icon"
-    //                   onClick={() => {
-    //                     dispatch(removeQuestionThunk(id));
-    //                   }}
-    //                 >
-    //                   <DeleteIcon />
-    //                 </IconButton>
-    //               </>
-    //             </CardActions>
-    //           </Card>
-    //         </Grid>
-    //       );
-    //     })}
-    //   </Grid>
-      // <Pagination
-      //   sx={{justifyContent: "center", marginTop: "50px"}}
-      //   count={Math.ceil(questions?.length / questionsPerPage)}
-      //   page={currentPage}
-      //   color="primary"
-      //   onChange={handlePageChange}
-      //   className="pagination-class"
-      // />
-    // </Container>
+    
     <Container sx={{ paddingTop: "50px" }}>
       <Tabs value={activeTab} onChange={handleTabChange}>
         <Tab label="My Quizzes" value="My Quizzes" />
         <Tab label="My Questions" value="My Questions" />
+        {/* <Tab label="Performance" value="Performance" /> */}
       </Tabs>
+      {/* {activeTab === "Performance" && (
+  <>
+    <Typography variant="h3" align="center">
+      Performance
+    </Typography>
+    <MyPerformance />
+  </>
+)} */}
       {activeTab === "My Quizzes" && (
   <>
     <Typography variant="h3" align="center">

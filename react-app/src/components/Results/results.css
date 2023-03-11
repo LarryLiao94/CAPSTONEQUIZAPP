@@ -1,0 +1,39 @@
+@keyframes confetti {
+    0% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+  
+  .confetti {
+    animation-name: confetti;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-delay: 1s;
+  }
+  
+  .confetti div {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #f1c40f;
+    border-radius: 50%;
+    animation-name: confetti-fall;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+  }
+  
+  @keyframes confetti-fall {
+    0% {
+      transform: translate(0, -100vh) rotate(0deg);
+    }
+    100% {
+      transform: translate(calc(100vw * var(--n)), 100vh) rotate(720deg);
+    }
+  }
