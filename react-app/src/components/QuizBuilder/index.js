@@ -159,27 +159,7 @@ function CreateQuiz() {
     setQuiz(newQuiz);
   };
 
-  // const handleChoiceChange = (e, index) => {
-  //   const value = e.target.value;
-  //   const name = e.target.name;
-  //   if (!value) {
-  //     setChoiceError({ ...choiceError, [index]: "This field is required" });
-  //   } else {
-  //     setChoiceError({ ...choiceError, [index]: "" });
-  //     const newQuiz = quiz.map((q) => {
-  //       if (q.name === name) {
-  //         q.choices.map((c, i) => {
-  //           if (index === i) {
-  //             c.choice = value;
-  //           }
-  //           return c;
-  //         });
-  //       }
-  //       return q;
-  //     });
-  //     setQuiz(newQuiz);
-  //   }
-  // };
+
   const handleChoiceChange = (e, index) => {
     const value = e.target.value;
     const name = e.target.name;

@@ -41,9 +41,7 @@ function Dashboard() {
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
   const handleSortByChange = (e) => setSortBy(e.target.value);
 
-  // const handleSubmit = () => {
-  //   dispatch(editQuizThunk({ id, title: currentTitle }));
-  // };
+
 
   useEffect(() => {
     if (quizzes) {
@@ -78,33 +76,7 @@ function Dashboard() {
   }
 
   return (
-    // <Container sx={{ paddingTop: "50px" }}>
-    //   <Typography variant="h3" align="center">
-    //     All Quizzes
-    //   </Typography>
-    //   <Grid
-    //     id="quiz-card-wrapper"
-    //     container
-    //     spacing={5}
-    //     sx={{ paddingTop: "50px" }}
-    //   >
-    //     {quizzes.map((quiz) => {
-    //       const { id, title, description, user_id } = quiz;
-    //       return (
-    //         <Grid item xs={12} md={6} lg={4} key={id}>
-    //           <Card sx={{ bgcolor: "#cfe8fc" }} className="quiz-card">
-    //             <CardActionArea onClick={() => history.push(`/quiz/${id}`)}>
-    //               <CardContent>
-    //                 <Typography variant="h5">{title}</Typography>
-    //                 <Typography variant="subtitle1">{description}</Typography>
-    //               </CardContent>
-    //             </CardActionArea>
-    //           </Card>
-    //         </Grid>
-    //       );
-    //     })}
-    //   </Grid>
-    // </Container>
+   
     <Container sx={{ paddingTop: "50px" }}>
       <Typography
         variant="h3"
