@@ -4,6 +4,7 @@ from app.models import Question, db, User, Choice, User_Question, Quiz, Category
 
 profile_routes = Blueprint('profile', __name__)
 
+#Route to gather questions and quizzes that the user has created themselves.
 @profile_routes.route('/')
 def get_user_questions_and_quizzes():
     quizzes = Quiz.query.filter(Quiz.user_id == current_user.id).all()

@@ -10,7 +10,6 @@ question_routes = Blueprint('questions', __name__)
 @question_routes.route('/', methods=['POST'])
 # @login_required
 def create_question():
-    # import ipdb; ipdb.set_trace()
     form = QuestionForm(csrf_enabled=False)
     if form.validate():
         new_question = Question(
@@ -22,10 +21,9 @@ def create_question():
         )
         db.session.add(new_question)
         db.session.commit()
-        # for choice in question["choices"]
+        # Each choice is 
         print(json.loads(request.data)["choices"])
         for choice in json.loads(request.data)["choices"]:
-            print('AWPIOEJFAOWIEJFA', new_question)
             new_choice = Choice(
                 question_id = new_question.id,
                 choice = choice["choice"],

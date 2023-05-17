@@ -20,6 +20,7 @@ import "./Quiz.css";
 import { Modal } from "../../context/Modal";
 import QuizResults from "../Results";
 
+//shuffle function for questions after submission of quiz
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -42,6 +43,7 @@ function Quiz() {
   const dispatch = useDispatch();
   const quizzes = useSelector((state) => state.quizzes);
 
+  //dispatch to get quiz data from backend
   useEffect(() => {
     const getQuiz = async () => {
       await dispatch(getQuizByIdThunk(id));
@@ -156,6 +158,7 @@ function Quiz() {
   };
 
   const handleRetake = async () => {
+    //retake button functionality to shuffle questions and reset question states so the colors are back to normal
     await dispatch(getQuizByIdThunk(id));
     setSelectedAnswers({});
     setCorrectAnswers(0);
