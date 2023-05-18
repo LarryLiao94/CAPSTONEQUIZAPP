@@ -21,7 +21,7 @@ def create_question():
         )
         db.session.add(new_question)
         db.session.commit()
-        # Each choice is 
+        # Each choice takes the data from the form and is created to the question that the choice belongs to within this question post method
         print(json.loads(request.data)["choices"])
         for choice in json.loads(request.data)["choices"]:
             new_choice = Choice(
@@ -85,67 +85,3 @@ def to_dict(self):
 def get_question_by_id(id):
     question = Question.query.get_or_404(id)
     return question.to_dict()
-
-# #delete question by ID
-# @question_routes.route('/<int:id>', methods=["DELETE"])
-# @login_required
-# def delete_question(id):
-#     question = Question.query.get_or_404(id)
-#     if(current_user.is_admin == True):
-#         db.session.delete(question)
-#         db.session.commit()
-#         return f'Question {id} deleted'
-#     return 'Unauthorized'
-
-# @question_routes.route('/', methods=["POST"])
-# @login_required
-# def create_new_question():
-#     form = QuestionForm
-
-# @question_routes.route('/questions', methods=['POST'])
-# @login_required
-# def create_question():
-#     question = request.data
-#     new_question = Question(
-#         user_id = current_user
-#         # the other data
-#     )
-
-#     for choice in question['choices']:
-#         Choice.new(
-
-#         )
-
-
-    # question = json.loads(request.data)
-    # print(question["choices"],'OISADJFOAIDJF')
-    # new_question = Question(
-    #     user_id = current_user.get_id(),
-    #     category_id = int(question["category_id"]),
-    #     quiz_id = int(question["quiz_id"]),
-    #     question_text = question["question_text"]
-    # )
-    # db.session.add(new_question)
-    # db.session.commit()
-    # print(new_question.id, "NEW QUESTIONNNNNNN")
-    # print(new_question.id, ' POST NEW QUESTION')
-    # test_choice = Choice(
-    #     question_id = int(new_question.id),
-    #     choice = "testing choice   ",
-    #     is_correct = True
-    # )
-    # db.session.add(test_choice)
-    # db.session.commit()
-    # print(test_choice, "test choice")
-
-    # for choice in question["choices"]:
-    #     new_choice = Choice(
-    #         question_id = int(new_question.id),
-    #         choice = choice["choice"],
-    #         is_correct = choice["is_correct"]
-    #     )
-    #     db.session.add(new_choice)
-    # db.session.commit()
-    # print("testing")
-    # new_question["choices"] = [Choice() for choice in new_question["choices"]]
-    # return new_question.to_dict()
