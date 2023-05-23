@@ -32,7 +32,6 @@ function Dashboard() {
   const [rowsPerPage, setRowsPerPage] = useState(9);
 
   const { quizzes } = useSelector((state) => state.quizzes);
-  // const { user } = useSelector((state) => state.session.user)
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -44,6 +43,7 @@ function Dashboard() {
 
 
   useEffect(() => {
+    // Load quizzes and set loading state
     if (quizzes) {
       setLoading(false);
     }
@@ -54,6 +54,7 @@ function Dashboard() {
     allQuiz();
   }, [dispatch]);
 
+  // Filter quizzes based on search term
   const filteredQuizzes = quizzes?.filter((quiz) =>
     quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
   );

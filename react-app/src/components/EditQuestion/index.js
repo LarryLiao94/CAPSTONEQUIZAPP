@@ -45,6 +45,7 @@ const EditQuestion = () => {
 const [showChoiceError, setShowChoiceError] = useState(false);
 const [showCheckBoxError, setShowCheckBoxError] = useState(false);
 
+  // Retrieve questions and quizzes from Redux state
   const allProfileQuestions = useSelector((state) => state.questions.questions);
   const allProfileQuizzes = useSelector((state) => state.quizzes.quizzes);
   const categories = useSelector((state) => state.categories);
@@ -53,11 +54,13 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
+  // Check if the selected choices include a correct answer
   const isCorrectAnswerSelected = (choices) => {
     return choices.some((c) => c.is_correct === true);
   };
 
   useEffect(() => {
+    // Fetch question details from Redux state based on ID
     if (allProfileQuestions && Object.keys(allProfileQuestions).length && id) {
       const question = Object.values(allProfileQuestions).find(
         (q) => q.id === Number(id)
@@ -68,20 +71,24 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
   }, [allProfileQuestions, id]);
 
   useEffect(() => {
+    // Fetch all categories from Redux state
     if (!allProfileQuestions) {
       dispatch(getProfileQuestionThunk());
     }
   }, [dispatch, allProfileQuestions]);
 
   useEffect(() => {
+    // Set the selected category details
     if (Object.keys(categories).length) {
       setAllCategories(categories[id]);
     }
   }, [categories]);
 
+  // Handle input change for question details
   const handleChange = (e) =>
     setQuestionDetails({ ...questionDetails, [e.target.name]: e.target.value });
 
+    // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormSubmitted(true);
@@ -93,10 +100,12 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
           choiceEmpty = true;
         }
       });
+      // Check if any choices are empty or no correct answer is selected
       if(isCorrectAnswerSelected(questionDetails.choices)) {
         checkboxChecked = true;
       }
     }
+    // Validate form inputs
     if (!questionDetails.question_text) {
       return;
     } else if (choiceEmpty) {
@@ -107,6 +116,8 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
       return;
     }
     let questionItem = {};
+
+    // Determine if the question belongs to a quiz or not
     if (questionDetails.quiz_id) {
       questionItem = {
         question_text: questionDetails.question_text,
@@ -134,6 +145,8 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
         })
       );
     }
+
+    // Update choices for the question
     questionDetails.choices.forEach(async (c) => {
       await dispatch(
         editChoiceThunk(c.id, { choice: c.choice, is_correct: c.is_correct })
@@ -142,6 +155,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
     history.push("/profile");
   };
 
+  // Handle choice change
   const handleChoiceChange = (e, itemID) => {
     const value = e.target.value;
     const newQuestion = { ...questionDetails };
@@ -155,6 +169,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
     setQuestionDetails(newQuestion);
   };
 
+  // Handle checkbox selection
   const handleCheckBox = (event, itemID) => {
     const newQuestion = { ...questionDetails };
     newQuestion.choices.map((c, i) => {
@@ -170,6 +185,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
   };
 
   useEffect(() => {
+    // Fetch quizzes for the user
     const profileQuiz = async () => {
       const profileQuizzes = await dispatch(getProfileQuizThunk());
       if (!profileQuizzes || !profileQuizzes.length) {
@@ -202,11 +218,14 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
   return (
     <Container maxWidth="false" sx={{ bgcolor: "#cfe8fc", height: "100vh" }}>
       <Stack spacing={10} justifyContent="center" alignItems="center">
+        {/* Edit Question Title */}
         <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
           <Typography variant="h2" component="h3">
             Edit Question
           </Typography>
         </Box>
+
+         {/* Question Form */}
         <Box
           sx={{
             width: "60%",
@@ -215,6 +234,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
           }}
         >
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+            {/* Question Text Input */}
             <TextField
               id={1}
               label="Question Text"
@@ -231,6 +251,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
             />
           </FormControl>
           <Grid container spacing={2}>
+            {/* Category Select */}
             <Grid item xs={6}>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <InputLabel id="category-select-label">Category</InputLabel>
@@ -256,6 +277,8 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
                 )}
               </FormControl>
             </Grid>
+
+            {/* Quiz Select */}
             <Grid item xs={6}>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
                 <InputLabel id="quiz-select-label">Quiz</InputLabel>
@@ -282,6 +305,8 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
               </FormControl>
             </Grid>
           </Grid>
+
+          {/* Choices */}
           {questionDetails?.choices?.map((c, i) => (
             <Box key={i + 1}>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
@@ -299,6 +324,7 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
                 />
               </FormControl>
               <FormControl fullWidth sx={{ p: 2 }} variant="filled">
+                {/* Is Correct Checkbox */}
                 <Typography>
                   Is Correct:
                   <Checkbox
@@ -317,6 +343,8 @@ const [showCheckBoxError, setShowCheckBoxError] = useState(false);
               </FormControl>
             </Box>
           ))}
+
+          {/* Submit Button */}
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
             <Stack direction="row" spacing={2}>
               <Button

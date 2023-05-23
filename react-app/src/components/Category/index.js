@@ -26,19 +26,22 @@ import CloseIcon from "@mui/icons-material/Close";
 // };
 
 function Category() {
-  const [loading, setLoading] = useState(true);
-  const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [open, setOpen] = useState(false);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [correctChoices, setCorrectChoices] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
+  // State variables
+  const [loading, setLoading] = useState(true); // Loading state
+  const [selectedAnswers, setSelectedAnswers] = useState({}); // Selected answers state
+  const [open, setOpen] = useState(false); // Modal open state
+  const [correctAnswers, setCorrectAnswers] = useState(0); // Correct answers count state
+  const [correctChoices, setCorrectChoices] = useState([]); // Correct choices state
+  const [submitted, setSubmitted] = useState(false); // Submitted state
 
-  const { id } = useParams();
-  const { user } = useSelector((state) => state.session);
-  const dispatch = useDispatch();
-  const [categoryDetails, setCategoryDetails] = useState(null);
-  const categories = useSelector((state) => state.categories);
+  // Other hooks and variables
+  const { id } = useParams(); // Get route parameter
+  const { user } = useSelector((state) => state.session); // Get user from Redux store
+  const dispatch = useDispatch(); // Redux dispatch function
+  const [categoryDetails, setCategoryDetails] = useState(null); // Category details state
+  const categories = useSelector((state) => state.categories); // Categories from Redux store
 
+  // Fetch category details and update loading state
   useEffect(() => {
     if (Object?.keys(categories).length && id) {
       setCategoryDetails(categories[id]);
@@ -106,12 +109,15 @@ function Category() {
   };
 
   const handleRetake = async () => {
+    // Reset the quiz and category state for retake
     await dispatch(getCategoryByIdThunk(id));
     setSelectedAnswers({});
     setCorrectAnswers(0);
     setCorrectChoices([]);
     setSubmitted(false);
     setOpen(false);
+
+    // Reset the categories state in Redux store
     const resetCategories = { ...categories };
     resetCategories.questions = resetCategories.questions.map((q) => {
       q.choices = q.choices.map((c) => {
@@ -130,14 +136,18 @@ function Category() {
 
   return (
     <>
+    {/* Main Container */}
       <Container
         maxWidth="false"
         sx={{ bgcolor: "#cfe8fc", height: "unset", minHeight: "100vh" }}
       >
+        {/* Stack for centering and spacing */}
         <Stack spacing={10} justifyContent="center" alignItems="center">
+          {/* Category title */}
           <Box sx={{ display: "flex", flexWrap: "wrap", paddingTop: "50px" }}>
             <Typography variant="h2">{categoryDetails?.title}</Typography>
           </Box>
+          {/* Questions */}
           {categoryDetails?.questions?.map((question, index) => (
             <Box
               key={question.id}
@@ -183,6 +193,7 @@ function Category() {
               </FormControl>
             </Box>
           ))}
+          {/* Submit or Retake buttons */}
           <FormControl fullWidth sx={{ p: 2 }} variant="filled">
             <Stack direction="row" spacing={2}>
               {!submitted && (
@@ -209,6 +220,7 @@ function Category() {
             </Stack>
           </FormControl>
         </Stack>
+        {/* Snackbar for showing the results */}
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           open={open}
